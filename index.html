@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welltake AUO 維運分析平台 V6.17 Test</title>
+<title>Welltake AUO 維運分析平台 V6.19 Test</title>
 <style>
 :root{
   --bg:#E7EEF3;
@@ -1428,7 +1428,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
 
     <div class="sidebar-foot">
-      <div class="sidebar-version">V6.17 Test · Daily History</div>
+      <div class="sidebar-version">V6.19 Test · IT Quality</div>
       <div class="small">AUO Official / Raw 分軌</div>
     </div>
   </aside>
@@ -1442,7 +1442,7 @@ html[data-theme="dark"] .logo-dark{
     </span>
         <div class="topbar-title-text">
           <div class="eyebrow">AUO OPERATIONS ANALYTICS</div>
-          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.17 Test</span></h1>
+          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.19 Test</span></h1>
           <div class="small" style="margin-top:2px">AUO 專用維運分析 Dashboard</div>
         </div>
       </div>
@@ -1539,7 +1539,7 @@ html[data-theme="dark"] .logo-dark{
 <div class="two-col">
       <div class="panel">
         <div class="panel-head">
-          <div><h2>7 日結案率趨勢</h2><div class="small">官方 Tableau KPI｜90% 為客戶目標</div></div>
+          <div><h2>7 日 IT完成率趨勢</h2><div class="small">官方 Tableau KPI｜90% 為客戶目標</div></div>
           <div class="legend"><span><i class="dot" style="background:var(--accent)"></i>Official</span><span><i class="dot" style="background:var(--target)"></i>Target</span></div>
         </div>
         <div id="officialTrend" class="chart"></div>
@@ -1552,7 +1552,7 @@ html[data-theme="dark"] .logo-dark{
 
     <div class="equal-col">
       <div class="panel">
-        <div class="panel-head"><div><h2>處理人員 7 日結案率</h2><div class="small">顯示本月 Closed Incident 件數較高者</div></div></div>
+        <div class="panel-head"><div><h2>處理人員 7 日 IT完成率</h2><div class="small">顯示本月 IT 已完成 Incident 件數較高者</div></div></div>
         <div id="handlerBars"></div>
       </div>
       <div class="panel">
@@ -1586,7 +1586,7 @@ html[data-theme="dark"] .logo-dark{
         <div class="toolbar">
           <div><h2>處理人員月度分析</h2><div class="small">點選處理人員可查看右側月別明細</div></div>
           <div class="control-row">
-          <label>最低 Closed 件數
+          <label>最低 IT完成件數
             <select id="handlerMinClosed" class="compact">
               <option value="0">不限</option>
               <option value="5">≥ 5</option>
@@ -1619,7 +1619,7 @@ html[data-theme="dark"] .logo-dark{
         <div class="toolbar">
           <div><h2>問題分類分析</h2><div class="small">點選 Sub Type 查看右側月別明細</div></div>
           <div class="control-row">
-          <label>最低 Closed 件數
+          <label>最低 IT完成件數
             <select id="issueMinClosed" class="compact">
               <option value="0">不限</option>
               <option value="5" selected>≥ 5</option>
@@ -1695,7 +1695,7 @@ html[data-theme="dark"] .logo-dark{
   <div class="equal-col section-gap">
     <div class="panel">
       <div class="panel-head">
-        <div><h2>案件時效分布</h2><div class="small">Closed Incident >7 日 Aging Bucket 變化</div></div>
+        <div><h2>案件時效分布</h2><div class="small">IT 已完成 Incident >7 日 Aging Bucket 變化</div></div>
       </div>
       <div id="agingCompare"></div>
     </div>
@@ -1847,7 +1847,7 @@ html[data-theme="dark"] .logo-dark{
             <label>Site
               <input id="officialSite" type="text" value="5.HC" readonly>
             </label>
-            <label>Official 7 日結案率 (%)
+            <label>Official 7 日 IT完成率 (%)
               <input id="official7d" type="number" min="0" max="100" step="0.1" value="">
             </label>
             <label>未結案件
@@ -1896,7 +1896,7 @@ html[data-theme="dark"] .logo-dark{
     <div class="panel">
       <div class="panel-head"><div><h2>資料品質與使用規則</h2><div class="small">避免把不同版本 Raw Data 當成完全同口徑</div></div></div>
       <div class="quality-grid">
-        <div class="quality-item"><strong>Official KPI</strong><br>客戶正式認列值以 Tableau 為準，首頁與主管摘要均使用 Official 7 日結案率。</div>
+        <div class="quality-item"><strong>Official KPI</strong><br>客戶正式認列值以 Tableau 為準，首頁與主管摘要均使用 Official 7 日 IT完成率。</div>
         <div class="quality-item"><strong>Raw 分析</strong><br>依檔案內實際 Created Month 分組；7D Rate＝該月建立且已結 Incident 中，7 日內結案的比例。</div>
         <div class="quality-item"><strong>待處理案件</strong><br>以整份檔案 Site 5.HC 最新狀態建立 Snapshot；切換月份不改變現況母體。檔案外案件無法納入。</div>
         <div class="quality-item"><strong>問題分類完整度</strong><br>Sub Type / Solution 各月完整度不一致；AI 原因分析應優先使用 Problem Description。</div>
@@ -1911,7 +1911,7 @@ html[data-theme="dark"] .logo-dark{
             <span class="rag-fixed-item warn"><b>黃</b> 80–89.9%</span>
             <span class="rag-fixed-item bad"><b>紅</b> &lt; 80%</span>
           </div>
-          <div class="small" style="margin-top:8px">Official 7 日結案率 Target：≥ 90%</div>
+          <div class="small" style="margin-top:8px">Official 7 日 IT完成率 Target：≥ 90%</div>
         </div>
         
       </div>
@@ -2140,7 +2140,7 @@ function filteredTickets(month){
 
 function filteredRawMetrics(month){
   const rows=filteredTickets(month);
-  const closed=rows.filter(t=>t.Handling_Status==="Closed" && t.Close_Days!=null);
+  const closed=rows.filter(t=>isITDone(t) && t.Close_Days!=null);
   const within7=closed.filter(t=>t.Close_Days<=7);
   return {
     Incident: rows.length,
@@ -2167,7 +2167,19 @@ function semanticClass(value,lowerIsBetter=false){
   return (lowerIsBetter?Number(value)<0:Number(value)>0)?"delta-good":"delta-bad";
 }
 
+function qualityGroups(open){const types=['Incident','IT Regular Job','Re-Follow up','未分類',...open.map(r=>r.Request_Type||'未分類')];return [...new Set(types)].map(type=>{const rows=open.filter(r=>(r.Request_Type||'未分類')===type);return {type,open:rows.length,over7:rows.filter(r=>r.Aging_Days>7).length,old:rows.filter(r=>r.Aging_Days>21).length}})}
 function renderOverview(){
+ const root=$('#overview');let panel=$('#qualityHome');if(!panel){panel=document.createElement('div');panel.id='qualityHome';panel.className='panel';root.prepend(panel)}
+ [...root.children].forEach(el=>{if(el!==panel&&el.id!=='emptyDataBanner')el.hidden=true});
+ if(!activeRows.length){panel.textContent='品質改善總覽：等待匯入 Raw Data。';return}
+ const open=IMPORT_STATE.actionAll,inc=IMPORT_STATE.actionIncident,date=IMPORT_STATE.snapshotDate,month=monthSelect.value,cohort=DATA.monthly.find(r=>r.Month===month),prev=hLatest(hDay(date,-1)),comparison=prev?hCompare(prev,{date,rows:hRows()}):null;
+ const nowMap=new Map(hRows().map(r=>[r.id,r]));const newLate=prev?prev.rows.filter(r=>r.type==='Incident'&&r.status==='In Progress'&&hAge(r,prev.date)<=7&&nowMap.get(r.id)?.status==='In Progress'&&hAge(nowMap.get(r.id),date)>7).length:null;
+ const cards=[['IT未完成（全部類型）',open.length],['>21天老案（全部類型）',open.filter(r=>r.Aging_Days>21).length],['昨日老案今日 IT完成',comparison?comparison.done.length:'需昨日快照'],['新跨過7天（Incident，持續未結）',newLate??'需昨日快照']];
+ const priority=[...open].filter(r=>r.Aging_Days>21||(r.Request_Type==='Incident'&&r.Aging_Days>=4)).sort((a,b)=>b.Aging_Days-a.Aging_Days);
+ panel.innerHTML=`<h2>品質改善總覽</h2><p>現況日期：${htmlText(date)}｜全檔現況不受月份／人員篩選影響。IT完成＝Resolved 或 Closed；完成日＝Handling Date；7天採日曆日期差。</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">${cards.map(([label,value])=>`<div class="kpi"><div class="label">${label}</div><div class="value">${value}</div></div>`).join('')}</div><p>${comparison?`昨日 → 今日老案存量：${comparison.start} → ${comparison.end}；存量差 ${comparison.net}。本次未包含 ${comparison.missing.length} 件；範圍待核對，不直接認定改善成果。`:'尚無昨日快照，先建立基準；不能由單份檔案推定每日改善。'}</p><h3>按案件類型追蹤</h3><div class="table-wrap"><table><thead><tr><th>Request Type</th><th>未完成</th><th>日期差 >7天</th><th>>21天老案</th></tr></thead><tbody>${qualityGroups(open).map(g=>`<tr><td>${htmlText(g.type)}</td><td>${g.open}</td><td>${g.over7}</td><td>${g.old}</td></tr>`).join('')}</tbody></table></div><p class="small">非 Incident 的 >7天僅代表案件年齡，不自動判定違反 SLA。未分類保留列管。</p><h3>${htmlText(month)} 建立月份品質參考</h3><p>Incident IT 7天內完成率：<strong>${pct(cohort?.Raw_7D_Rate)}</strong>（${cohort?.Closed_Within_7D??0}／${cohort?.Closed_Incident_Cohort??0} 件 IT完成）；仍未完成 ${activeRows.filter(r=>r.Month===month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length} 件。Official KPI 為獨立口徑，請至趨勢／資料匯入查看，不將差異直接當作改善。</p><h3>今日優先行動（${priority.length}件，列出前50件）</h3><div class="table-wrap"><table><thead><tr><th>Ticket</th><th>類型</th><th>Owner</th><th>Aging</th><th>建議行動</th></tr></thead><tbody>${priority.slice(0,50).map(r=>`<tr><td>${htmlText(r.Ticket_No)}</td><td>${htmlText(r.Request_Type)}</td><td>${htmlText(r.Handler||'待確認')}</td><td>${r.Aging_Days}</td><td>${htmlText(r.Next_Action)}</td></tr>`).join('')||'<tr><td colspan="5">無符合條件案件</td></tr>'}</tbody></table></div><p>完整案件請至「行動／風險」；每日／本週比較請至「品質改善日報」及「每日歷史快照」。重複問題原因與協調需求仍需人工確認。</p>`;
+}
+
+function renderLegacyOverview(){
   const m=monthSelect.value, row=DATA.monthly.find(x=>x.Month===m), idx=months.indexOf(m), prev=DATA.monthly[idx-1], snap=DATA.officialSnapshot[m];
   if(!row)return;
   const filtered=filteredRawMetrics(m);
@@ -2199,7 +2211,7 @@ function renderOverview(){
       <div class="delta">
         <span class="chip ${semanticClass(mom)}">月增減 ${mom==null?"—":semanticDelta(mom,{suffix:"pp",decimals:1})}</span>
         <span class="chip">Raw ${pct(row.Raw_7D_Rate)} ${rawMom==null?"":semanticDelta(rawMom,{suffix:"pp",decimals:1})}</span>
-        <span class="chip">${monthName(m)} Closed cohort ${num(row.Closed_Incident_Cohort)}</span>
+        <span class="chip">${monthName(m)} IT完成 cohort ${num(row.Closed_Incident_Cohort)}</span>
       </div>
     </div>
     <div class="kpi"><div class="label">Incident</div><div class="value">${num(row.Incident_Cases)}</div><div class="delta-line">${incidentDelta==null?"—":semanticDelta(incidentDelta,{lowerIsBetter:true,suffix:" 件"})}</div><div class="sub">vs 上月</div></div>
@@ -2208,7 +2220,7 @@ function renderOverview(){
     <div class="kpi"><div class="label">>21 日</div><div class="value bad">${snap?num(snap.over21):"—"}</div><div class="sub">${snap?"Exception":"無官方 Snapshot"}</div></div>
     <div class="kpi"><div class="label">Raw − Official</div><div class="value">${rawOfficialGap==null?"—":`${rawOfficialGap==null?"—":`${rawOfficialGap>=0?"+":""}${rawOfficialGap.toFixed(1)}pp`}`}</div><div class="sub">口徑差異（百分點）</div></div>
     <div class="kpi"><div class="label">Created Cases</div><div class="value">${num(row.Created_Cases)}</div><div class="delta-line">${createdDelta==null?"—":semanticDelta(createdDelta,{lowerIsBetter:true,suffix:" 件"})}</div><div class="sub">vs 上月</div></div>
-    <div class="kpi"><div class="label">Closed in Month</div><div class="value">${num(row.Closed_In_Month)}</div><div class="delta-line">${closedDelta==null?"—":semanticDelta(closedDelta,{suffix:" 件"})}</div><div class="sub">vs 上月</div></div>
+    <div class="kpi"><div class="label">當月 IT完成</div><div class="value">${num(row.Closed_In_Month)}</div><div class="delta-line">${closedDelta==null?"—":semanticDelta(closedDelta,{suffix:" 件"})}</div><div class="sub">vs 上月</div></div>
     <div class="kpi"><div class="label">Data Month</div><div class="value">${monthName(m)}</div><div class="sub">Created Month</div></div>`;
 
   lineChart($("#officialTrend"),months.map(monthName),[{values:DATA.monthly.map(x=>x.Official_7D_Rate)}],.9);
@@ -2219,9 +2231,9 @@ function renderOverview(){
 
   let notes=[];
   const managementSummaryText=officialMissing
-    ? `${monthName(m)} 尚未輸入 Official KPI Snapshot；目前僅顯示 Raw 分析結果。Raw 7 日結案率為 ${pct(row.Raw_7D_Rate)}。`
+    ? `${monthName(m)} 尚未輸入 Official KPI Snapshot；目前僅顯示 Raw 分析結果。Raw 7 日 IT完成率為 ${pct(row.Raw_7D_Rate)}。`
     : `${monthName(m)} Official 7 日率為 ${pct(official)}${mom==null?"":`，較上月${mom>=0?"提升":"下降"} ${Math.abs(mom).toFixed(1)}pp`}。${row.Closed_Over_7D!=null?` >7 日已結案案件 ${num(row.Closed_Over_7D)} 件。`:""}${officialGap==null?"":` 目前距 90% KPI ${officialGap>=0?"已達標":"尚差 "+Math.abs(officialGap).toFixed(1)+"pp"}。`}`;
-  if(officialMissing){notes.push(`<div class="insight"><strong>Official KPI 尚未更新</strong>${monthName(m)} 尚未輸入 Official KPI Snapshot；目前僅顯示 Raw 分析結果，Raw 7 日結案率為 ${pct(row.Raw_7D_Rate)}。</div>`);}
+  if(officialMissing){notes.push(`<div class="insight"><strong>Official KPI 尚未更新</strong>${monthName(m)} 尚未輸入 Official KPI Snapshot；目前僅顯示 Raw 分析結果，Raw 7 日 IT完成率為 ${pct(row.Raw_7D_Rate)}。</div>`);}
   if(prev && !officialMissing && hasNumber(prev.Official_7D_Rate)){
     const d=ppDelta(row.Official_7D_Rate,prev.Official_7D_Rate);
     if(d!=null) notes.push(`<div class="insight"><strong>KPI ${d>=0?"改善":"下降"}</strong>${monthName(prev.Month)} ${pct(prev.Official_7D_Rate)} → ${monthName(m)} ${pct(row.Official_7D_Rate)}，${semanticDelta(d,{suffix:"pp",decimals:1})}。</div>`);
@@ -2265,7 +2277,7 @@ function renderExecutiveSummary(){
 
   let msg=[];
   if(officialMissing){
-    msg.push(`${monthName(m)} 尚未輸入 Official KPI Snapshot，目前以 Raw Data 作為分析預覽。Raw 7 日結案率為 ${pct(row.Raw_7D_Rate)}。`);
+    msg.push(`${monthName(m)} 尚未輸入 Official KPI Snapshot，目前以 Raw Data 作為分析預覽。Raw 7 日 IT完成率為 ${pct(row.Raw_7D_Rate)}。`);
   }else{
     if(mom!=null){
       msg.push(`${monthName(m)} Official 7 日率為 ${pct(official)}，較上月 ${mom>=0?"提升":"下降"} ${Math.abs(mom).toFixed(1)}pp。`);
@@ -2291,7 +2303,7 @@ function renderTrend(){
     {values:DATA.monthly.map(x=>x.Created_Cases)}
   ]);
   lineChart($("#over7Trend"),months.map(monthName),[{values:DATA.monthly.map(x=>x.Closed_Over_7D)}]);
-  $("#monthlyTable").innerHTML=`<thead><tr><th>月份</th><th class="num">Official</th><th class="num">Raw</th><th class="num">差異</th><th class="num">月增減</th><th class="num">Incident</th><th class="num">>7 日</th><th class="num">Closed cohort</th></tr></thead><tbody>`+
+  $("#monthlyTable").innerHTML=`<thead><tr><th>月份</th><th class="num">Official</th><th class="num">Raw</th><th class="num">差異</th><th class="num">月增減</th><th class="num">Incident</th><th class="num">>7 日</th><th class="num">IT完成 cohort</th></tr></thead><tbody>`+
     DATA.monthly.map(x=>{
       const gap=x.Gap_pp;
       const gapCls=gap==null?"delta-neutral":Math.abs(gap)<=.5?"delta-good":Math.abs(gap)<=2?"delta-warn":"delta-bad";
@@ -2330,7 +2342,7 @@ function renderHandler(){
 
   if(!selectedHandler || !rows.some(x=>x.Handler===selectedHandler)) selectedHandler=rows[0]?.Handler || null;
 
-  $("#handlerTable").innerHTML=`<thead><tr><th>處理人員</th><th class="num">Incident</th><th class="num">Closed</th><th class="num">>7 日</th><th class="num">7 日 Rate</th></tr></thead><tbody>`+
+  $("#handlerTable").innerHTML=`<thead><tr><th>處理人員</th><th class="num">Incident</th><th class="num">IT完成</th><th class="num">>7 日</th><th class="num">7 日 Rate</th></tr></thead><tbody>`+
     (rows.length?rows.map(x=>`<tr><td><button class="btn-link handlerPick" data-name="${x.Handler.replace(/"/g,'&quot;')}">${htmlText(x.Handler)}</button></td><td class="num">${num(x.Incident_Cases)}</td><td class="num">${num(x.Closed_Incident)}</td><td class="num">${num(x.Over_7D)}</td><td class="num">${rateBadge(x["7D_Rate"])}</td></tr>`).join(""):`<tr><td colspan="5" class="empty">目前條件沒有符合的 Handler</td></tr>`)+`</tbody>`;
 
   $$(".handlerPick").forEach(b=>b.addEventListener("click",()=>{
@@ -2356,7 +2368,7 @@ function renderHandlerDetail(){
         <div class="detail-stat"><div class="small">Incident</div><div class="v">${num(cur?.Incident_Cases)}</div></div>
         <div class="detail-stat"><div class="small">7 日 Rate</div><div class="v">${pct(cur?.["7D_Rate"])}</div></div>
         <div class="detail-stat"><div class="small">>7 日</div><div class="v">${num(cur?.Over_7D)}</div></div>
-        <div class="detail-stat"><div class="small">Closed</div><div class="v">${num(cur?.Closed_Incident)}</div></div>
+        <div class="detail-stat"><div class="small">IT完成</div><div class="v">${num(cur?.Closed_Incident)}</div></div>
       </div>
     </div>
     <div class="chart" id="handlerDetailChart"></div>`;
@@ -2383,7 +2395,7 @@ function renderIssue(){
 
   if(!selectedIssue || !rows.some(x=>x.Sub_Type===selectedIssue)) selectedIssue=rows[0]?.Sub_Type || null;
 
-  $("#issueTable").innerHTML=`<thead><tr><th>Sub Type</th><th class="num">Incident</th><th class="num">Closed</th><th class="num">>7 日</th><th class="num">7 日 Rate</th></tr></thead><tbody>`+
+  $("#issueTable").innerHTML=`<thead><tr><th>Sub Type</th><th class="num">Incident</th><th class="num">IT完成</th><th class="num">>7 日</th><th class="num">7 日 Rate</th></tr></thead><tbody>`+
     (rows.length?rows.map(x=>`<tr><td><button class="btn-link issuePick" data-name="${x.Sub_Type.replace(/"/g,'&quot;')}">${htmlText(x.Sub_Type)}</button></td><td class="num">${num(x.Incident_Cases)}</td><td class="num">${num(x.Closed_Incident)}</td><td class="num">${num(x.Over_7D)}</td><td class="num">${rateBadge(x["7D_Rate"])}</td></tr>`).join(""):`<tr><td colspan="5" class="empty">目前條件沒有符合的 Issue</td></tr>`)+`</tbody>`;
 
   $$(".issuePick").forEach(b=>b.addEventListener("click",()=>{
@@ -2406,7 +2418,7 @@ function renderIssueDetail(){
         <div class="detail-stat"><div class="small">Incident</div><div class="v">${num(cur?.Incident_Cases)}</div></div>
         <div class="detail-stat"><div class="small">7 日 Rate</div><div class="v">${pct(cur?.["7D_Rate"])}</div></div>
         <div class="detail-stat"><div class="small">>7 日</div><div class="v">${num(cur?.Over_7D)}</div></div>
-        <div class="detail-stat"><div class="small">Closed</div><div class="v">${num(cur?.Closed_Incident)}</div></div>
+        <div class="detail-stat"><div class="small">IT完成</div><div class="v">${num(cur?.Closed_Incident)}</div></div>
       </div>
     </div>
     <div class="chart" id="issueDetailChart"></div>`;
@@ -2451,7 +2463,7 @@ function renderCompare(){
     ["Official 7 日",`${pct(b.Official_7D_Rate)} → ${pct(c.Official_7D_Rate)}`,officialDelta==null?"—":`${officialDelta>=0?"+":""}${(officialDelta==null?"—":officialDelta.toFixed(1))}pp`,deltaClass(officialDelta)],
     ["Raw 7 日",`${pct(b.Raw_7D_Rate)} → ${pct(c.Raw_7D_Rate)}`,rawDelta==null?"—":`${rawDelta>=0?"+":""}${rawDelta.toFixed(1)}pp`,deltaClass(rawDelta)],
     ["Incident",`${num(b.Incident_Cases)} → ${num(c.Incident_Cases)}`,`${incidentDelta>=0?"+":""}${incidentDelta} (${volumePct==null?"—":(volumePct>=0?"+":"")+volumePct.toFixed(1)+"%"})`,deltaClass(incidentDelta,true)],
-    [">7 日 Closed",`${num(b.Closed_Over_7D)} → ${num(c.Closed_Over_7D)}`,`${over7Delta>=0?"+":""}${over7Delta}`,deltaClass(over7Delta,true)],
+    [">7 日 IT完成",`${num(b.Closed_Over_7D)} → ${num(c.Closed_Over_7D)}`,`${over7Delta>=0?"+":""}${over7Delta}`,deltaClass(over7Delta,true)],
     ["目標差距",`${targetGap(b.Official_7D_Rate)==null?"—":targetGap(b.Official_7D_Rate).toFixed(1)+"pp"} → ${targetGap(c.Official_7D_Rate)==null?"—":targetGap(c.Official_7D_Rate).toFixed(1)+"pp"}`,targetGap(c.Official_7D_Rate)==null?"—":`${targetGap(c.Official_7D_Rate).toFixed(1)}pp vs 90%`,deltaClass(targetGap(c.Official_7D_Rate))]
   ].map(x=>`<div class="delta-card"><div class="k">${x[0]}</div><div class="pair">${x[1]}</div><div class="delta ${x[3]}">${x[2]}</div></div>`).join("");
 
@@ -2527,7 +2539,7 @@ function renderCompare(){
 
   // Aging >7 日 distribution from Ticket 主檔
   const bucketize=(month)=>{
-    const rows=TICKETS.filter(x=>x.Month===month && x.Request_Type==="Incident" && x.Handling_Status==="Closed" && x.Close_Days>7);
+    const rows=TICKETS.filter(x=>x.Month===month && x.Request_Type==="Incident" && isITDone(x) && x.Close_Days>7);
     const buckets={"8–14D":0,"15–21D":0,"22–30D":0,">30D":0};
     rows.forEach(x=>{
       if(x.Close_Days<=14) buckets["8–14D"]++;
@@ -2557,7 +2569,7 @@ function renderCompare(){
 
   let summary=[];
   summary.push(`<strong>${monthName(baselineCompareMonth)} → ${monthName(targetCompareMonth)}</strong> Official 7 日率 ${officialDelta==null?"資料不足":`${officialDelta>=0?"提升":"下降"} ${Math.abs(officialDelta).toFixed(1)}pp`}。`);
-  summary.push(`Incident ${incidentDelta<=0?"減少":"增加"} ${Math.abs(incidentDelta)} 件${volumePct==null?"":`（${Math.abs(volumePct).toFixed(1)}%）`}；>7 日 Closed ${over7Delta<=0?"減少":"增加"} ${Math.abs(over7Delta)} 件。`);
+  summary.push(`Incident ${incidentDelta<=0?"減少":"增加"} ${Math.abs(incidentDelta)} 件${volumePct==null?"":`（${Math.abs(volumePct).toFixed(1)}%）`}；>7 日 IT完成 ${over7Delta<=0?"減少":"增加"} ${Math.abs(over7Delta)} 件。`);
   if(improvedHandlers.length) summary.push(`>7 日 減少較明顯的 Handler 包含 ${improvedHandlers.map(x=>`${htmlText(x.Handler)} (${x.Over7_Delta})`).join("、")}。`);
   summary.push(`以上為關聯變化，用於定位改善來源，不直接視為單一因素造成 KPI 變化。`);
   $("#compareSummary").innerHTML=summary.join(" ");
@@ -2567,7 +2579,7 @@ function renderCompare(){
   if(compareIssues.length) attention.push(`<div class="insight"><strong>主要 >7 日 Issue</strong>${compareIssues.map(x=>`${htmlText(x.Sub_Type)} ${x.Comp_Over7}件`).join("、")}。</div>`);
   if(worsenedHandlers.length) attention.push(`<div class="insight"><strong>需進一步 Drill-down</strong>${worsenedHandlers.map(x=>`${htmlText(x.Handler)} (>7 日 +${x.Over7_Delta})`).join("、")}；需搭配案件難度與 Case Mix 判讀。</div>`);
   const highAging=(ac["15–21D"]+ac["22–30D"]+ac[">30D"]);
-  attention.push(`<div class="insight"><strong>長 Aging</strong>${monthName(targetCompareMonth)} 的 >14D Closed Incident 共 ${highAging} 件。</div>`);
+  attention.push(`<div class="insight"><strong>長 Aging</strong>${monthName(targetCompareMonth)} 的 >14D IT 已完成 Incident 共 ${highAging} 件。</div>`);
   $("#compareAttention").innerHTML=attention.join("");
 }
 
@@ -2707,7 +2719,7 @@ function renderEarlyWarning(actionIncident){
 
   $("#earlyWarningMeta").innerHTML=
     `<span>測試模型：規則式 Risk Score，非 ML 機率</span>
-     <span>歷史 Issue Risk 使用快照月份以前的 Closed Incident；樣本 &lt;10 時不直接判定高風險</span>
+     <span>歷史 Issue Risk 使用快照月份以前的 IT 已完成 Incident；樣本 &lt;10 時不直接判定高風險</span>
      <span>目前 Medium ${medium} 件</span>`;
 }
 
@@ -2777,7 +2789,7 @@ function renderAction(){
       <td>${htmlText(a.Handler||"—")}</td>
       <td>${htmlText(a.Sub_Type)}${a.Sub_Type2?` / ${htmlText(a.Sub_Type2)}`:""}</td>
       <td>${htmlText(a.Delay_Category)}</td>
-      <td>${scope==="resolved"?"確認是否可正式 Closed":a.Next_Action}</td>
+      <td>${scope==="resolved"?"IT 已完成（不列入未結）":a.Next_Action}</td>
     </tr>`;
   }).join(""):`<tr><td colspan="8" class="empty">目前條件沒有符合的案件</td></tr>`)+`</tbody>`;
 
@@ -2964,7 +2976,8 @@ function parseAnyDate(v){
 }
 function isoMonth(d){return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`:""}
 function isoDate(d){return d?`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`:""}
-function dayDiff(a,b){return a&&b&&b>=a?Math.floor((b-a)/86400000):null}
+function isITDone(r){return ['Resolved','Closed'].includes(r.Handling_Status)}
+function dayDiff(a,b){return a&&b&&b>=a?Math.round((Date.UTC(b.getFullYear(),b.getMonth(),b.getDate())-Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()))/86400000):null}
 
 const manualStatusMapping=new Map();
 function statusKey(value){return String(value??'').normalize('NFKC').replace(/[\u200B-\u200D\uFEFF]/g,'').trim().toLowerCase().replace(/[\s_-]+/g,'')}
@@ -3021,7 +3034,7 @@ function canonicalizeRows(){
       Ticket_Type:String(r[map.Ticket_Type]??"").trim(),
       Problem_Description:String(r[map.Problem_Description]??"").trim().slice(0,180),
       Overdue_Label:String(r[map.Overdue_Label]??"").trim(),
-      Close_Days:dayDiff(created,closed)
+      Close_Days:dayDiff(created,handling)
     };
   });
 }
@@ -3197,7 +3210,8 @@ function selectLatestRows(rows){
     if(!row.Created_Date_Obj)throw new Error('存在無效 Created Date，請先修正。');
     if(!['In Progress','Resolved','Closed','Cancelled','Canceled'].includes(row.Handling_Status))throw new Error('未辨識狀態：' + (row.Handling_Status||'（空白）') + '。請完成資料匯入頁的「案件狀態對應」。');
 
-    if(row.Handling_Status==='Closed'&&row.Close_Days==null)throw new Error('Closed 案件缺少有效 Closed Date，或結案日期早於建立日期。');
+    row.Close_Days=dayDiff(row.Created_Date_Obj,row.Handling_Date_Obj);
+    if(isITDone(row)&&row.Close_Days==null)throw new Error('IT 已完成案件缺少有效 Handling Date，或處理完成日期早於建立日期；不可改用 Closed Date。');
     const group=groups.get(row.Ticket_No)||[];group.push(row);groups.set(row.Ticket_No,group);
   }
   const result=[];
@@ -3219,14 +3233,14 @@ function buildCurrentModel(rows,snapshot,fileName){
   DATA.monthly=[];DATA.handlers=[];DATA.issues=[];DATA.officialSnapshot={};
   TICKETS.length=0;Object.keys(HANDLER_ROLE_MAP).forEach(k=>delete HANDLER_ROLE_MAP[k]);
   for(const r of rows){
-    TICKETS.push({...r,Closed_Within_7D:r.Handling_Status==='Closed'&&r.Close_Days!=null&&r.Close_Days<=7});
+    TICKETS.push({...r,Closed_Within_7D:isITDone(r)&&r.Close_Days!=null&&r.Close_Days<=7});
     if(r.Handler&&r.Handler_Group)HANDLER_ROLE_MAP[r.Handler]=r.Handler_Group;
   }
   const allMonths=[...new Set(rows.map(r=>r.Month))].sort();
   for(const month of allMonths){
     const cohort=rows.filter(r=>r.Month===month),inc=cohort.filter(r=>r.Request_Type==='Incident');
-    const closed=inc.filter(r=>r.Handling_Status==='Closed'&&r.Close_Days!=null),within=closed.filter(r=>r.Close_Days<=7);
-    DATA.monthly.push({Month:month,Created_Cases:cohort.length,Incident_Cases:inc.length,Closed_Incident_Cohort:closed.length,Closed_Within_7D:within.length,Closed_Over_7D:closed.length-within.length,Raw_7D_Rate:closed.length?within.length/closed.length:null,Official_7D_Rate:null,Gap_pp:null,Closed_In_Month:rows.filter(r=>r.Closed_Date_Obj&&isoMonth(r.Closed_Date_Obj)===month&&r.Handling_Status==='Closed').length,Reconstructed_MonthEnd_待處理案件:null,月增減_Official_pp:null});
+    const closed=inc.filter(r=>isITDone(r)&&r.Close_Days!=null),within=closed.filter(r=>r.Close_Days<=7);
+    DATA.monthly.push({Month:month,Created_Cases:cohort.length,Incident_Cases:inc.length,Closed_Incident_Cohort:closed.length,Closed_Within_7D:within.length,Closed_Over_7D:closed.length-within.length,Raw_7D_Rate:closed.length?within.length/closed.length:null,Official_7D_Rate:null,Gap_pp:null,Closed_In_Month:rows.filter(r=>r.Handling_Date_Obj&&isoMonth(r.Handling_Date_Obj)===month&&isITDone(r)).length,Reconstructed_MonthEnd_待處理案件:null,月增減_Official_pp:null});
     for(const key of ['Handler','Sub_Type']){
       const grouped=new Map();
       for(const r of inc){
@@ -3234,7 +3248,7 @@ function buildCurrentModel(rows,snapshot,fileName){
         if(!grouped.has(name))grouped.set(name,{Month:month,[key]:name,Incident_Cases:0,Closed_Incident:0,Within_7D:0,Over_7D:0,Final_Open:0});
         const a=grouped.get(name);a.Incident_Cases++;
         if(r.Handling_Status==='In Progress')a.Final_Open++;
-        if(r.Handling_Status==='Closed'&&r.Close_Days!=null){a.Closed_Incident++;if(r.Close_Days<=7)a.Within_7D++;else a.Over_7D++}
+        if(isITDone(r)&&r.Close_Days!=null){a.Closed_Incident++;if(r.Close_Days<=7)a.Within_7D++;else a.Over_7D++}
       }
       DATA[key==='Handler'?'handlers':'issues'].push(...[...grouped.values()].map(a=>({...a,'7D_Rate':a.Closed_Incident?a.Within_7D/a.Closed_Incident:null})));
     }
@@ -3294,7 +3308,7 @@ function validateSnapshot(rows,snapshot){
  if(!snapshot||!parseAnyDate(snapshot))throw new Error('請填 Raw Snapshot 日期。');
  if(snapshot>localToday())throw new Error('Snapshot 日期不可晚於今天。');
  const end=parseAnyDate(snapshot);end.setHours(23,59,59,999);
- if(rows.some(r=>['Created_Date_Obj','Closed_Date_Obj','Updated_Date_Obj','Snapshot_Date_Obj'].some(k=>r[k]&&r[k]>end)))throw new Error('檔案含晚於 Snapshot 日期的資料，無法以目前狀態重建過去快照；請確認日期。');
+ if(rows.some(r=>['Created_Date_Obj','Handling_Date_Obj','Closed_Date_Obj','Updated_Date_Obj','Snapshot_Date_Obj'].some(k=>r[k]&&r[k]>end)))throw new Error('檔案含晚於 Snapshot 日期的資料，無法以目前狀態重建過去快照；請確認日期。');
 }
 function renderEmptyState(){
  const empty=!activeRows.length;
@@ -3405,7 +3419,7 @@ function saveOfficialSnapshot(){
   const row=DATA.monthly.find(x=>x.Month===month);
   if(row){
     row.Official_7D_Rate=official7d;
-    row.Gap_pp=row.Raw_7D_Rate!=null&&official7d!=null?(row.Raw_7D_Rate-official7d)*100:null;
+    row.Gap_pp=null;
   }
   recalcOfficialMoM();
   $("#officialSaveStatus").textContent="已儲存";
@@ -3433,7 +3447,7 @@ function mergeStoredOfficials(){
   const store=getOfficialStore();
   Object.entries(store).forEach(([m,s])=>{
     const row=DATA.monthly.find(x=>x.Month===m);
-    if(row){row.Official_7D_Rate=s.official7d;row.Gap_pp=row.Raw_7D_Rate!=null&&s.official7d!=null?(row.Raw_7D_Rate-s.official7d)*100:null}
+    if(row){row.Official_7D_Rate=s.official7d;row.Gap_pp=null}
     if(!DATA.officialSnapshot)DATA.officialSnapshot={};
     DATA.officialSnapshot[m]={openCases:s.openCases,over21:s.over21,snapshotDate:s.snapshotDate};
   });
@@ -3453,7 +3467,7 @@ function reconCell(gap,type){
 function renderImportReconciliation(){
   const month=$("#officialMonth")?.value||monthSelect.value;
   const o=getOfficialSnapshot(month), r=activeRawForRecon(month);
-  const rr=reconCell(o?.official7d!=null&&r.rate!=null?(r.rate-o.official7d)*100:null,"rate");
+  const rr=["口徑不同，待核對", ""];
   const ro=["口徑待核對", ""];
   const r21=["口徑待核對", ""];
   $("#importReconTable").innerHTML=`<thead><tr><th>KPI 指標</th><th class="num">Official</th><th class="num">Raw</th><th class="num">差異</th></tr></thead><tbody>
@@ -3510,7 +3524,7 @@ function applyFilterCollapse(){
   if(btn)btn.textContent=collapsed?"展開篩選":"收合篩選";
 }
 
-const VERSION_LOG=[{v:"V6.17 Test",date:"2026-11-02",title:"本機每日歷史快照",items:["套用 Raw 保存同日修訂版本，提供日期比對及備份。","日報引用昨日與週日前基準，存量差不推定改善。","歷史獨立保存，重算日期不建立快照。"]},{v:"V6.16 Test",date:"2026-11-02",title:"品質改善日報",items:["新增日報及複製功能，排除履約出勤。","現況採全檔 Snapshot；缺少歷史快照標示需昨日快照。","沿用 V6.15.2 匯入、Official、Risk 與 Early Warning。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"允許空白 Request Type 並揭露分類缺漏",items:["空白 Request Type 保留為未分類，不再阻擋整份檔案。","仍納入全部案件與 In Progress 未結統計，不納入 Incident KPI／預警。","匯入預覽、套用結果及現況頁顯示待補筆數；原始檔不變。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"匯入狀態辨識修正",items:["自動統一既有英文狀態的大小寫、空白、底線、連字號與全形字元。","列出未辨識的原始狀態與筆數，提供本次匯入的手動對應。","未確認狀態不套用；不將未知狀態擅自視為 Closed 或 In Progress。"]},{v:"V6.15.2 Test",date:"2026-10-19",title:"空白啟動、瀏覽器快取、Snapshot / Cohort 分離",items:["以 V6.14 Test 版型與預警規則為基礎，移除內嵌客戶資料與舊 Official 預設數值。","單一跨月 Raw 檔案取代當前資料，動態建立實際月份。","Raw 使用 IndexedDB，無法使用時以小容量 localStorage 備援；Official 獨立快取。","Snapshot 日期獨立設定，Open / >7D / >21D / Early Warning 不受報告月份限制。","重複案件依更新時間判定；時間不明的衝突阻擋套用。","提供 Raw、Official 與全部重置；快取限本機瀏覽器，不隨 HTML 傳送。"]}];
+const VERSION_LOG=[{v:"V6.19 Test",date:"2026-11-02",title:"IT 品質改善口徑",items:["Resolved／Closed 均為 IT完成，以 Handling Date 的日曆日期差計算。","首頁改為改善追蹤，各 Request Type 分列老案。","快照新增處理完成日；舊快照缺此欄位不推定完成。"]},{v:"V6.17 Test",date:"2026-11-02",title:"本機每日歷史快照",items:["套用 Raw 保存同日修訂版本，提供日期比對及備份。","日報引用昨日與週日前基準，存量差不推定改善。","歷史獨立保存，重算日期不建立快照。"]},{v:"V6.16 Test",date:"2026-11-02",title:"品質改善日報",items:["新增日報及複製功能，排除履約出勤。","現況採全檔 Snapshot；缺少歷史快照標示需昨日快照。","沿用 V6.15.2 匯入、Official、Risk 與 Early Warning。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"允許空白 Request Type 並揭露分類缺漏",items:["空白 Request Type 保留為未分類，不再阻擋整份檔案。","仍納入全部案件與 In Progress 未結統計，不納入 Incident KPI／預警。","匯入預覽、套用結果及現況頁顯示待補筆數；原始檔不變。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"匯入狀態辨識修正",items:["自動統一既有英文狀態的大小寫、空白、底線、連字號與全形字元。","列出未辨識的原始狀態與筆數，提供本次匯入的手動對應。","未確認狀態不套用；不將未知狀態擅自視為 Closed 或 In Progress。"]},{v:"V6.15.2 Test",date:"2026-10-19",title:"空白啟動、瀏覽器快取、Snapshot / Cohort 分離",items:["以 V6.14 Test 版型與預警規則為基礎，移除內嵌客戶資料與舊 Official 預設數值。","單一跨月 Raw 檔案取代當前資料，動態建立實際月份。","Raw 使用 IndexedDB，無法使用時以小容量 localStorage 備援；Official 獨立快取。","Snapshot 日期獨立設定，Open / >7D / >21D / Early Warning 不受報告月份限制。","重複案件依更新時間判定；時間不明的衝突阻擋套用。","提供 Raw、Official 與全部重置；快取限本機瀏覽器，不隨 HTML 傳送。"]}];
 
 function renderReadme(){
   const q=($("#releaseSearch")?.value||"").trim().toLowerCase();
@@ -3586,16 +3600,16 @@ function safeRender(label,fn){
 let historyRecords=[],historyReady=false;
 function hDay(d,delta=0){const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+delta);return x.toISOString().slice(0,10)}
 function hAge(r,d){return Math.round((Date.parse(d+'T00:00:00Z')-Date.parse(r.created+'T00:00:00Z'))/86400000)}
-function hRows(){return activeRows.map(r=>({id:r.Ticket_No,created:isoDate(r.Created_Date_Obj),closed:isoDate(r.Closed_Date_Obj),status:r.Handling_Status,type:r.Request_Type,owner:r.Handler||''}))}
+function hRows(){return activeRows.map(r=>({id:r.Ticket_No,created:isoDate(r.Created_Date_Obj),closed:isoDate(r.Closed_Date_Obj),handled:isoDate(r.Handling_Date_Obj),status:r.Handling_Status,type:r.Request_Type,owner:r.Handler||''}))}
 function hOld(s){return s.rows.filter(r=>r.status==='In Progress'&&hAge(r,s.date)>21)}
 function hLatest(d){return historyRecords.filter(s=>s.date===d).sort((a,b)=>b.savedAt-a.savedAt||b.id.localeCompare(a.id))[0]}
 async function hDB(records){return new Promise((resolve,reject)=>{const q=indexedDB.open('welltake_daily_history_v1',1);q.onupgradeneeded=()=>q.result.createObjectStore('snapshots',{keyPath:'id'});q.onerror=()=>reject(q.error);q.onblocked=()=>reject(new Error('歷史資料庫被其他分頁占用'));q.onsuccess=()=>{const db=q.result,tx=db.transaction('snapshots',records?'readwrite':'readonly'),st=tx.objectStore('snapshots');let req;if(records)records.forEach(r=>st.put(r));else req=st.getAll();tx.oncomplete=()=>{resolve(req?req.result:null);db.close()};tx.onerror=tx.onabort=()=>{reject(tx.error||new Error('歷史儲存失敗'));db.close()}}})}
 async function hSave(){if(!historyReady)throw new Error('每日歷史尚未就緒，請重新開啟後再匯入');const s={id:crypto.randomUUID(),date:IMPORT_STATE.snapshotDate,savedAt:Date.now(),file:activeFileName,rows:hRows()};await hDB([s]);historyRecords=await hDB();hRender();renderDaily()}
-function hCompare(a,b){const am=new Map(a.rows.map(r=>[r.id,r])),bm=new Map(b.rows.map(r=>[r.id,r])),old=hOld(a),now=hOld(b),os=new Set(old.map(r=>r.id));return {start:old.length,end:now.length,net:old.length-now.length,missing:a.rows.filter(r=>!bm.has(r.id)),added:b.rows.filter(r=>!am.has(r.id)),done:old.filter(r=>{const t=bm.get(r.id);return t&&t.status==='Closed'&&t.closed>a.date&&t.closed<=b.date}),unknownClosed:old.filter(r=>{const t=bm.get(r.id);return t&&t.status==='Closed'&&!(t.closed>a.date&&t.closed<=b.date)}),entered:now.filter(r=>!os.has(r.id)),crossed:now.filter(r=>am.get(r.id)?.status==='In Progress'&&!os.has(r.id)),reopened:now.filter(r=>am.has(r.id)&&am.get(r.id).status!=='In Progress'),newOld:now.filter(r=>!am.has(r.id))}}
+function hCompare(a,b){const am=new Map(a.rows.map(r=>[r.id,r])),bm=new Map(b.rows.map(r=>[r.id,r])),old=hOld(a),now=hOld(b),os=new Set(old.map(r=>r.id));return {start:old.length,end:now.length,net:old.length-now.length,missing:a.rows.filter(r=>!bm.has(r.id)),added:b.rows.filter(r=>!am.has(r.id)),done:old.filter(r=>{const t=bm.get(r.id);return t&&['Resolved','Closed'].includes(t.status)&&t.handled>a.date&&t.handled<=b.date}),unknownClosed:old.filter(r=>{const t=bm.get(r.id);return t&&['Resolved','Closed'].includes(t.status)&&!(t.handled>a.date&&t.handled<=b.date)}),entered:now.filter(r=>!os.has(r.id)),crossed:now.filter(r=>am.get(r.id)?.status==='In Progress'&&!os.has(r.id)),reopened:now.filter(r=>am.has(r.id)&&am.get(r.id).status!=='In Progress'),newOld:now.filter(r=>!am.has(r.id))}}
 function hRender(){const dates=[...new Set(historyRecords.map(s=>s.date))].sort();for(const id of ['historyFrom','historyTo']){const e=$('#'+id),prev=e.value;e.replaceChildren();dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;e.append(o)});e.value=dates.includes(prev)?prev:(id==='historyFrom'?dates.at(-2)||dates[0]:dates.at(-1))||''}$('#historySummary').textContent=`已保存 ${dates.length} 天／${historyRecords.length} 個版本；同日以最後保存版本比較。歷史只存在本瀏覽器，請定期匯出備份。`;hShow()}
-function hShow(){const a=hLatest($('#historyFrom').value),b=hLatest($('#historyTo').value),out=$('#historyResult');if(!a||!b){out.textContent='至少匯入兩個不同資料日期，才能進行跨日比對。';return}if(a.date>=b.date){out.textContent='基準日期必須早於比較日期。';return}const c=hCompare(a,b),days=Math.round((Date.parse(b.date)-Date.parse(a.date))/86400000),ids=rs=>rs.length?rs.map(r=>r.id).join('、'):'無';out.textContent=`比較期間：${a.date} → ${b.date}（${days}天${days===1?'':'；非當日變化'}）\n基準檔：${a.file}｜${new Date(a.savedAt).toLocaleString('zh-TW')}\n比較檔：${b.file}｜${new Date(b.savedAt).toLocaleString('zh-TW')}\n>21天期初：${c.start}｜期末：${c.end}\n區間正式完成老案：${c.done.length}｜${ids(c.done)}\nClosed 但結案日期不符／缺少：${c.unknownClosed.length}｜${ids(c.unknownClosed)}\n新增進入>21天：${c.entered.length}\n　跨過門檻：${c.crossed.length}｜重新進入未結：${c.reopened.length}｜新納入老案：${c.newOld.length}\n本次未包含案件：${c.missing.length}｜${ids(c.missing)}\n本次新納入案件：${c.added.length}｜${ids(c.added)}\n存量差（期初－期末）：${c.net}；僅為數量差，不等於正式完成件數。\n${c.missing.length?'有案件消失，不能判定為改善淨減。':'仍須確認兩次匯出母體及篩選一致。'}`}
-function hDaily(text){if(!activeRows.length)return text;const date=IMPORT_STATE.snapshotDate,current={date,rows:hRows()},previous=hLatest(hDay(date,-1)),monday=new Date(date+'T00:00:00Z');monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));const weekDate=hDay(monday.toISOString().slice(0,10),-1),week=hLatest(weekDate);if(previous){const c=hCompare(previous,current);text=text.replace('- 期初存量：需昨日快照',`- 期初存量：${c.start} 件（${previous.date}）`).replace('- 當日正式完成老案：需昨日快照（目標 ≥3件）',`- 當日正式完成老案：${c.done.length} 件（目標 ≥3件；需今日 Closed 且結案日期為今日）`).replace('- 當日新增>21天：需昨日快照',`- 當日新增>21天：${c.entered.length} 件（跨門檻 ${c.crossed.length}、重新未結 ${c.reopened.length}、新納入 ${c.newOld.length}）`).replace('- 當日淨減：需昨日快照（目標 ≥2件）',`- 當日淨減：待確認資料範圍；存量差 ${c.net} 件（目標 ≥2件），本次未包含 ${c.missing.length} 件，不推定結案`)}if(week){const c=hCompare(week,current);text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：待確認資料範圍；${weekDate} → ${date} 存量差 ${c.net} 件，本次未包含 ${c.missing.length} 件（目標 ≥10件）`)}else text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：缺少本週起始基準快照 ${weekDate}（目標 ≥10件）`);return text.replace('註：現有快取僅保存當前資料，未保存每日歷史快照；不得以案件消失推定完成。','註：每日歷史取同日最後保存版本；缺少昨日不自動替代。存量差須核對範圍，不得以案件消失推定完成。')}
-function hValidate(data){if(data?.format!=='welltake-history-v1'||!Array.isArray(data.snapshots)||data.snapshots.length>2000)throw new Error('不是支援的每日快照備份（最多2000版本）');const seen=new Set();return data.snapshots.map(s=>{if(typeof s.id!=='string'||s.id.length>100||seen.has(s.id)||!/^\d{4}-\d{2}-\d{2}$/.test(s.date)||!Number.isFinite(s.savedAt)||s.savedAt<=0||s.savedAt>Date.now()+60000||typeof s.file!=='string'||!Array.isArray(s.rows)||s.rows.length>200000)throw new Error('快照格式不正確');if(hDay(s.date)!==s.date||s.date>localToday())throw new Error('快照日期不正確');seen.add(s.id);const ids=new Set();const rows=s.rows.map(r=>{if(!r||typeof r.id!=='string'||!r.id||r.id.length>200||ids.has(r.id)||!['In Progress','Closed','Resolved','Cancelled'].includes(r.status)||typeof r.type!=='string'||typeof r.owner!=='string')throw new Error('案件欄位或重複編號不正確');for(const key of ['created','closed']){if(key==='closed'&&r[key]==='')continue;if(typeof r[key]!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(r[key])||hDay(r[key])!==r[key]||r[key]>s.date)throw new Error('案件日期不正確')}if(r.closed&&r.closed<r.created)throw new Error('結案日期早於建立日期');ids.add(r.id);return {id:r.id,created:r.created,closed:r.closed,status:r.status,type:r.type,owner:r.owner}});return {id:s.id,date:s.date,savedAt:s.savedAt,file:s.file.slice(0,500),rows}})}
+function hShow(){const a=hLatest($('#historyFrom').value),b=hLatest($('#historyTo').value),out=$('#historyResult');if(!a||!b){out.textContent='至少匯入兩個不同資料日期，才能進行跨日比對。';return}if(a.date>=b.date){out.textContent='基準日期必須早於比較日期。';return}const c=hCompare(a,b),days=Math.round((Date.parse(b.date)-Date.parse(a.date))/86400000),ids=rs=>rs.length?rs.map(r=>r.id).join('、'):'無';out.textContent=`比較期間：${a.date} → ${b.date}（${days}天${days===1?'':'；非當日變化'}）\n基準檔：${a.file}｜${new Date(a.savedAt).toLocaleString('zh-TW')}\n比較檔：${b.file}｜${new Date(b.savedAt).toLocaleString('zh-TW')}\n>21天期初：${c.start}｜期末：${c.end}\n區間 IT完成老案：${c.done.length}｜${ids(c.done)}\nIT 已完成但 Handling Date 不符／缺少（含舊快照）：${c.unknownClosed.length}｜${ids(c.unknownClosed)}\n新增進入>21天：${c.entered.length}\n　跨過門檻：${c.crossed.length}｜重新進入未結：${c.reopened.length}｜新納入老案：${c.newOld.length}\n本次未包含案件：${c.missing.length}｜${ids(c.missing)}\n本次新納入案件：${c.added.length}｜${ids(c.added)}\n存量差（期初－期末）：${c.net}；僅為數量差，不等於正式完成件數。\n${c.missing.length?'有案件消失，不能判定為改善淨減。':'仍須確認兩次匯出母體及篩選一致。'}`}
+function hDaily(text){if(!activeRows.length)return text;const date=IMPORT_STATE.snapshotDate,current={date,rows:hRows()},previous=hLatest(hDay(date,-1)),monday=new Date(date+'T00:00:00Z');monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));const weekDate=hDay(monday.toISOString().slice(0,10),-1),week=hLatest(weekDate);if(previous){const c=hCompare(previous,current);text=text.replace('- 期初存量：需昨日快照',`- 期初存量：${c.start} 件（${previous.date}）`).replace('- 當日 IT完成老案：需昨日快照（目標 ≥3件）',`- 當日 IT完成老案：${c.done.length} 件（目標 ≥3件；需今日 IT 已完成且 Handling Date 為今日）`).replace('- 當日新增>21天：需昨日快照',`- 當日新增>21天：${c.entered.length} 件（跨門檻 ${c.crossed.length}、重新未結 ${c.reopened.length}、新納入 ${c.newOld.length}）`).replace('- 當日淨減：需昨日快照（目標 ≥2件）',`- 當日淨減：待確認資料範圍；存量差 ${c.net} 件（目標 ≥2件），本次未包含 ${c.missing.length} 件，不推定結案`)}if(week){const c=hCompare(week,current);text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：待確認資料範圍；${weekDate} → ${date} 存量差 ${c.net} 件，本次未包含 ${c.missing.length} 件（目標 ≥10件）`)}else text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：缺少本週起始基準快照 ${weekDate}（目標 ≥10件）`);return text.replace('註：現有快取僅保存當前資料，未保存每日歷史快照；不得以案件消失推定完成。','註：每日歷史取同日最後保存版本；缺少昨日不自動替代。存量差須核對範圍，不得以案件消失推定完成。')}
+function hValidate(data){if(data?.format!=='welltake-history-v1'||!Array.isArray(data.snapshots)||data.snapshots.length>2000)throw new Error('不是支援的每日快照備份（最多2000版本）');const seen=new Set();return data.snapshots.map(s=>{if(typeof s.id!=='string'||s.id.length>100||seen.has(s.id)||!/^\d{4}-\d{2}-\d{2}$/.test(s.date)||!Number.isFinite(s.savedAt)||s.savedAt<=0||s.savedAt>Date.now()+60000||typeof s.file!=='string'||!Array.isArray(s.rows)||s.rows.length>200000)throw new Error('快照格式不正確');if(hDay(s.date)!==s.date||s.date>localToday())throw new Error('快照日期不正確');seen.add(s.id);const ids=new Set();const rows=s.rows.map(r=>{if(!r||typeof r.id!=='string'||!r.id||r.id.length>200||ids.has(r.id)||!['In Progress','Closed','Resolved','Cancelled'].includes(r.status)||typeof r.type!=='string'||typeof r.owner!=='string')throw new Error('案件欄位或重複編號不正確');for(const key of ['created','closed',...(r.handled!==undefined?['handled']:[])]){if(key!=='created'&&r[key]==='')continue;if(typeof r[key]!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(r[key])||hDay(r[key])!==r[key]||r[key]>s.date)throw new Error('案件日期不正確')}if(r.closed&&r.closed<r.created)throw new Error('結案日期早於建立日期');ids.add(r.id);if(r.handled&&r.handled<r.created)throw new Error('IT完成日期早於建立日期');return {id:r.id,created:r.created,closed:r.closed,...(r.handled!==undefined?{handled:r.handled}:{}),status:r.status,type:r.type,owner:r.owner}});return {id:s.id,date:s.date,savedAt:s.savedAt,file:s.file.slice(0,500),rows}})}
 async function hInit(){try{historyRecords=await hDB();historyReady=true;hRender()}catch(e){$('#historySummary').textContent='歷史快照無法讀取：'+e.message}$('#historyFrom').onchange=$('#historyTo').onchange=hShow;$('#historyExport').onclick=async()=>{try{const records=await hDB(),blob=new Blob([JSON.stringify({format:'welltake-history-v1',snapshots:records})],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='welltake-history-'+localToday()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){$('#historySummary').textContent='匯出失敗：'+e.message}};$('#historyBackup').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;if(f.size>100*1024*1024)throw new Error('備份超過100MB');const records=hValidate(JSON.parse(await f.text())),existing=await hDB(),map=new Map(existing.map(s=>[s.id,s]));for(const r of records)if(map.has(r.id)&&JSON.stringify(map.get(r.id))!==JSON.stringify(r))throw new Error('備份與本機同版本內容衝突，未匯入');const fresh=records.filter(r=>!map.has(r.id));if(!confirm(`匯入 ${fresh.length} 個新歷史版本？不覆蓋目前 Raw 或 Official；同日將依保存時間選取最新版本。`))return;await hDB(fresh);historyRecords=await hDB();hRender();renderDaily();$('#historySummary').textContent+=` 已匯入 ${fresh.length} 個版本。`}catch(err){$('#historySummary').textContent='未匯入：'+err.message}finally{e.target.value=''}};$('#historyClear').onclick=async()=>{if(!confirm('清除全部每日歷史快照？此動作無法復原，請先匯出備份。目前 Raw 與 Official 保留。'))return;try{await new Promise((resolve,reject)=>{const q=indexedDB.deleteDatabase('welltake_daily_history_v1');q.onsuccess=resolve;q.onerror=()=>reject(q.error);q.onblocked=()=>reject(new Error('請關閉其他平台分頁再清除'))});historyRecords=[];hRender();renderDaily()}catch(e){$('#historySummary').textContent='清除失敗：'+e.message}}}
 
 function dailyReportText(){
@@ -3604,7 +3618,7 @@ function dailyReportText(){
  const inc=IMPORT_STATE.actionIncident, open=IMPORT_STATE.actionAll;
  const old=open.filter(r=>r.Aging_Days>21), loads=currentHandlerLoad(inc);
  const watch=inc.filter(r=>r.Aging_Days!=null&&r.Aging_Days<=7).map(r=>({...r,pred:earlyWarningScore(r,date.slice(0,7),loads)})).filter(r=>['High','Critical'].includes(r.pred.label));
- const closedToday=activeRows.filter(r=>r.Request_Type==='Incident'&&r.Handling_Status==='Closed'&&isoDate(r.Closed_Date_Obj)===date);
+ const closedToday=activeRows.filter(r=>r.Request_Type==='Incident'&&isITDone(r)&&isoDate(r.Handling_Date_Obj)===date);
  const missingDays=closedToday.filter(r=>r.Close_Days==null).length;
  const cohort=DATA.monthly.find(r=>r.Month===month);
  const ids=rows=>rows.length?rows.map(r=>r.Ticket_No).join('、'):'無';
@@ -3615,19 +3629,20 @@ function dailyReportText(){
  `- 當日新增案件：${activeRows.filter(r=>r.Request_Type==='Incident'&&isoDate(r.Created_Date_Obj)===date).length} 件`,
  ...[4,5,6].map(d=>`- Day ${d}${d===5?'預警':d===6?'升級':''}案件：${inc.filter(r=>r.Aging_Days===d).length} 件`),
  `- 當日應完成案件：${inc.filter(r=>r.Aging_Days===7).length} 件（In Progress、日曆 Aging = 7；管理提醒）`,
- `- 7天內正式結案件數：${closedToday.filter(r=>r.Close_Days!=null&&r.Close_Days<=7).length} 件（當日 Closed，沿用原平台 Close Days ≤ 7）${missingDays?`；另 ${missingDays} 件缺少結案天數，待確認`:''}`,
- `- 目前準時結案率：${pct(cohort?.Raw_7D_Rate)}（${month} 建立月份 Cohort；7天內 Closed ${cohort?.Closed_Within_7D??0}／有效 Closed ${cohort?.Closed_Incident_Cohort??0}，非 Official KPI）`,
+ `- 7天內 IT完成件數：${closedToday.filter(r=>r.Close_Days!=null&&r.Close_Days<=7).length} 件（Resolved／Closed，Handling Date 為當日，日曆日期差 ≤7）${missingDays?`；另 ${missingDays} 件缺少結案天數，待確認`:''}`,
+ `- 目前 IT準時完成率：${pct(cohort?.Raw_7D_Rate)}（${month} 建立月份 Cohort；7天內 IT完成 ${cohort?.Closed_Within_7D??0}／有效 IT完成 ${cohort?.Closed_Incident_Cohort??0}，非 Official KPI）`,
  `- 預估逾期案件：${watch.length} 件（Early Warning High / Critical，Aging ≤ 7；規則預警，非逾期機率）`,
  '- 需主管協調案件：待確認（預警不等於已確認需協調）','',
  '三、>21天 Backlog（全部 Request Type、In Progress）',
  '- 期初存量：需昨日快照',
- '- 當日正式完成老案：需昨日快照（目標 ≥3件）',
+ '- 當日 IT完成老案：需昨日快照（目標 ≥3件）',
  '- 當日新增>21天：需昨日快照',
  '- 當日淨減：需昨日快照（目標 ≥2件）',
  `- 期末存量：${old.length} 件`,
  '- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',
  '註：現有快取僅保存當前資料，未保存每日歷史快照；不得以案件消失推定完成。','',
  '四、月份別剩餘存量（全部 Request Type、In Progress）'];
+ lines.push('各類型未完成／>21天：',...qualityGroups(open).map(g=>`- ${g.type}：${g.open}／${g.old} 件`),'');
  const buckets=new Map();for(const r of open){const key=r.Created_Date?.slice(0,7)||'建立月份待確認';buckets.set(key,(buckets.get(key)||0)+1)}
  for(const [key,count] of [...buckets].sort((a,b)=>a[0].localeCompare(b[0])))lines.push(`- ${key}：${count} 件`);
  lines.push(`- 合計：${open.length} 件`,'','五、阻塞及升級案件（候選清單，需人工確認）');
