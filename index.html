@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welltake AUO 維運分析平台 V6.21 Test</title>
+<title>Welltake AUO 維運分析平台 V6.22 Test</title>
 <style>
 :root{
   --bg:#E7EEF3;
@@ -1421,14 +1421,14 @@ html[data-theme="dark"] .logo-dark{
       <button data-tab="compare"><span class="nav-icon">⇄</span><span>月度改善</span></button>
       <button data-tab="action"><span class="nav-icon">!</span><span>行動／風險</span></button>
       <button data-tab="history"><span class="nav-icon">◷</span><span>每日歷史快照</span></button>
-<button data-tab="daily"><span class="nav-icon">▤</span><span>品質改善日報</span></button>
+<button data-tab="engineer"><span class="nav-icon">↔</span><span>工程師改善追蹤</span></button><button data-tab="daily"><span class="nav-icon">▤</span><span>品質改善日報</span></button>
       <button data-tab="import"><span class="nav-icon">⇧</span><span>資料匯入</span></button>
       <button data-tab="quality"><span class="nav-icon">✓</span><span>資料品質</span></button>
       <button data-tab="readme"><span class="nav-icon">≡</span><span>版本說明</span></button>
     </div>
 
     <div class="sidebar-foot">
-      <div class="sidebar-version">V6.21 Test · Raw Tracking</div>
+      <div class="sidebar-version">V6.22 Test · Raw Tracking</div>
       <div class="small">威策案件 Raw Data 追蹤</div>
     </div>
   </aside>
@@ -1442,7 +1442,7 @@ html[data-theme="dark"] .logo-dark{
     </span>
         <div class="topbar-title-text">
           <div class="eyebrow">AUO OPERATIONS ANALYTICS</div>
-          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.21 Test</span></h1>
+          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.22 Test</span></h1>
           <div class="small" style="margin-top:2px">AUO 專用維運分析 Dashboard</div>
         </div>
       </div>
@@ -1519,7 +1519,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
 
 <section id="history" class="view"><div class="panel"><h2>每日歷史快照</h2><p>每次成功套用 Raw 後保存一個版本。日期重算不保存歷史，避免把舊狀態當作新資料。所有 Request Type 的 In Progress 納入存量。</p><p id="historySummary" role="status">讀取歷史中…</p><div class="row"><label>基準日期 <select id="historyFrom"></select></label> <label>比較日期 <select id="historyTo"></select></label></div><pre id="historyResult" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.9"></pre><button id="historyExport">匯出歷史備份</button> <label>匯入歷史備份 <input type="file" id="historyBackup" accept=".json,application/json"></label><button id="historyClear">清除全部歷史快照</button><p class="small">備份含案件編號與 Owner 等資料，未加密，請保存在公司允許的位置，不要上傳公開 GitHub。Raw／全部重置不清除每日歷史；請使用本頁專用清除按鈕。</p></div></section>
-<section id="daily" class="view"><div class="panel">
+<section id="engineer" class="view"><div class="panel"><h2>工程師改善追蹤</h2><p>依快照追蹤案件變化，不代表完整工作紀錄。沿用上方廠區篩選；完成採 Resolved／Closed 與 Handling Date，Resolved → Closed 不重複計算。</p><div class="import-actions"><label>基準日期 <select id="engineerFrom"></select></label><label>比較日期 <select id="engineerTo"></select></label><label>案件類型 <select id="engineerType"></select></label><label>工程師 <select id="engineerOwner"></select></label><label><input type="checkbox" id="engineerOpenOnly">只看期末有未完成案件</label><label>排序 <select id="engineerSort"><option value="oldEnd">期末老案</option><option value="done">區間完成</option><option value="late">新增逾期</option><option value="end">期末未完成</option></select></label><button id="engineerExport" class="primary-btn" disabled>匯出比較表 CSV</button></div><p id="engineerSummary" style="white-space:pre-wrap"></p><p class="small">依期末 >21 天老案排序。負荷增減＝期末－期初，不等於績效；新增逾期僅指 Incident。轉入／轉出包含承辦人或廠區變更，不限未完成案件。區間不包含基準日、包含比較日。點選數字查看明細。</p><div class="table-wrap"><table id="engineerTable"></table></div><div id="engineerDetails"></div></div></section><section id="daily" class="view"><div class="panel">
 <h2>品質改善日報</h2><p class="small">依匯入快照日期產生；Current Snapshot 不受月份、人員或問題篩選限制。僅代表匯入檔涵蓋案件，請確認包含所有未結老案。客戶案件資料僅供授權人員使用。</p>
 <button id="copyDaily" class="primary-btn" type="button">複製日報</button> <span id="dailyCopyStatus" role="status" aria-live="polite"></span>
 <pre id="dailyReport" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.85;margin-top:20px"></pre>
@@ -3115,6 +3115,7 @@ async function applyImportedRaw(){
   const missing=REQUIRED_CANONICAL.filter(k=>!IMPORT_STATE.mapping[k]);if(missing.length)throw new Error('必要欄位尚未對應。');
   const rows=selectLatestRows(canonicalizeRows()),snapshot=$('#rawSnapshotDate').value;
   validateSnapshot(rows,snapshot);
+  if(!confirm(`確認套用：${IMPORT_STATE.fileName}\n實際撈取日期：${snapshot}\n此日期用於每日快照及區間比較，請確認與檔案一致。同日使用最後保存版本。`))return;
   buildCurrentModel(rows,snapshot,IMPORT_STATE.fileName);
   try{const backend=await persistRaw(rawRecord());cacheMessage(`已套用並保存至 ${backend}｜${rows.length} 個案件｜${months.length} 個月份｜快照 ${snapshot}`)}
   catch(e){cacheMessage(`已套用，但快取失敗：${e.message} 請保留原始檔；重新開啟可能恢復上次成功儲存的資料。`)}
@@ -3249,7 +3250,7 @@ function applyFilterCollapse(){
   if(btn)btn.textContent=collapsed?"展開篩選":"收合篩選";
 }
 
-const VERSION_LOG=[{v:"V6.21 Test",date:"2026-11-03",title:"Raw Data 案件追蹤版",items:["移除手動 KPI 快照輸入與對帳，所有現況指標依 Raw Data 計算。","保留威策篩選、廠區切換、每日歷史及品質改善日報。","既有舊版 KPI 儲存紀錄不讀取、不刪除。"]},{v:"V6.20 Test",date:"2026-11-03",title:"威策案件與廠區篩選",items:["以 Handler 含 welltake 篩選，預設全部廠區，可依 Site 查看。","Raw 與每日歷史保存全部威策案件，切換廠區不覆蓋資料。","舊 HC 快取需重新匯入；舊快照保留隔離，新基準才參與比較。"]},{v:"V6.19 Test",date:"2026-11-02",title:"IT 品質改善口徑",items:["Resolved／Closed 均為 IT完成，以 Handling Date 的日曆日期差計算。","首頁改為改善追蹤，各 Request Type 分列老案。","快照新增處理完成日；舊快照缺此欄位不推定完成。"]},{v:"V6.17 Test",date:"2026-11-02",title:"本機每日歷史快照",items:["套用 Raw 保存同日修訂版本，提供日期比對及備份。","日報引用昨日與週日前基準，存量差不推定改善。","歷史獨立保存，重算日期不建立快照。"]},{v:"V6.16 Test",date:"2026-11-02",title:"品質改善日報",items:["新增日報及複製功能，排除履約出勤。","現況採全檔 Snapshot；缺少歷史快照標示需昨日快照。","沿用 V6.15.2 匯入、Official、Risk 與 Early Warning。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"允許空白 Request Type 並揭露分類缺漏",items:["空白 Request Type 保留為未分類，不再阻擋整份檔案。","仍納入全部案件與 In Progress 未結統計，不納入 Incident KPI／預警。","匯入預覽、套用結果及現況頁顯示待補筆數；原始檔不變。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"匯入狀態辨識修正",items:["自動統一既有英文狀態的大小寫、空白、底線、連字號與全形字元。","列出未辨識的原始狀態與筆數，提供本次匯入的手動對應。","未確認狀態不套用；不將未知狀態擅自視為 Closed 或 In Progress。"]},{v:"V6.15.2 Test",date:"2026-10-19",title:"空白啟動、瀏覽器快取、Snapshot / Cohort 分離",items:["以 V6.14 Test 版型與預警規則為基礎，移除內嵌客戶資料與舊 Official 預設數值。","單一跨月 Raw 檔案取代當前資料，動態建立實際月份。","Raw 使用 IndexedDB，無法使用時以小容量 localStorage 備援；Official 獨立快取。","Snapshot 日期獨立設定，Open / >7D / >21D / Early Warning 不受報告月份限制。","重複案件依更新時間判定；時間不明的衝突阻擋套用。","提供 Raw、Official 與全部重置；快取限本機瀏覽器，不隨 HTML 傳送。"]}];
+const VERSION_LOG=[{v:"V6.22 Test",date:"2026-11-03",title:"工程師區間改善追蹤",items:["每日快照比較完成、老案、逾期與負荷；提供案件明細及 CSV。","轉派與未包含不推定完成；日報加入工程師摘要。","套用 Raw 前確認檔名與資料日期。"]},{v:"V6.22 Test",date:"2026-11-03",title:"Raw Data 案件追蹤版",items:["移除手動 KPI 快照輸入與對帳，所有現況指標依 Raw Data 計算。","保留威策篩選、廠區切換、每日歷史及品質改善日報。","既有舊版 KPI 儲存紀錄不讀取、不刪除。"]},{v:"V6.20 Test",date:"2026-11-03",title:"威策案件與廠區篩選",items:["以 Handler 含 welltake 篩選，預設全部廠區，可依 Site 查看。","Raw 與每日歷史保存全部威策案件，切換廠區不覆蓋資料。","舊 HC 快取需重新匯入；舊快照保留隔離，新基準才參與比較。"]},{v:"V6.19 Test",date:"2026-11-02",title:"IT 品質改善口徑",items:["Resolved／Closed 均為 IT完成，以 Handling Date 的日曆日期差計算。","首頁改為改善追蹤，各 Request Type 分列老案。","快照新增處理完成日；舊快照缺此欄位不推定完成。"]},{v:"V6.17 Test",date:"2026-11-02",title:"本機每日歷史快照",items:["套用 Raw 保存同日修訂版本，提供日期比對及備份。","日報引用昨日與週日前基準，存量差不推定改善。","歷史獨立保存，重算日期不建立快照。"]},{v:"V6.16 Test",date:"2026-11-02",title:"品質改善日報",items:["新增日報及複製功能，排除履約出勤。","現況採全檔 Snapshot；缺少歷史快照標示需昨日快照。","沿用 V6.15.2 匯入、Official、Risk 與 Early Warning。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"允許空白 Request Type 並揭露分類缺漏",items:["空白 Request Type 保留為未分類，不再阻擋整份檔案。","仍納入全部案件與 In Progress 未結統計，不納入 Incident KPI／預警。","匯入預覽、套用結果及現況頁顯示待補筆數；原始檔不變。"]},{v:"V6.15.2 Test",date:"2026-10-21",title:"匯入狀態辨識修正",items:["自動統一既有英文狀態的大小寫、空白、底線、連字號與全形字元。","列出未辨識的原始狀態與筆數，提供本次匯入的手動對應。","未確認狀態不套用；不將未知狀態擅自視為 Closed 或 In Progress。"]},{v:"V6.15.2 Test",date:"2026-10-19",title:"空白啟動、瀏覽器快取、Snapshot / Cohort 分離",items:["以 V6.14 Test 版型與預警規則為基礎，移除內嵌客戶資料與舊 Official 預設數值。","單一跨月 Raw 檔案取代當前資料，動態建立實際月份。","Raw 使用 IndexedDB，無法使用時以小容量 localStorage 備援；Official 獨立快取。","Snapshot 日期獨立設定，Open / >7D / >21D / Early Warning 不受報告月份限制。","重複案件依更新時間判定；時間不明的衝突阻擋套用。","提供 Raw、Official 與全部重置；快取限本機瀏覽器，不隨 HTML 傳送。"]}];
 
 function renderReadme(){
   const q=($("#releaseSearch")?.value||"").trim().toLowerCase();
@@ -3331,7 +3332,8 @@ function hLatest(d){const s=historyRecords.filter(s=>s.scopeVersion===SCOPE_VERS
 async function hDB(records){return new Promise((resolve,reject)=>{const q=indexedDB.open('welltake_daily_history_v1',1);q.onupgradeneeded=()=>q.result.createObjectStore('snapshots',{keyPath:'id'});q.onerror=()=>reject(q.error);q.onblocked=()=>reject(new Error('歷史資料庫被其他分頁占用'));q.onsuccess=()=>{const db=q.result,tx=db.transaction('snapshots',records?'readwrite':'readonly'),st=tx.objectStore('snapshots');let req;if(records)records.forEach(r=>st.put(r));else req=st.getAll();tx.oncomplete=()=>{resolve(req?req.result:null);db.close()};tx.onerror=tx.onabort=()=>{reject(tx.error||new Error('歷史儲存失敗'));db.close()}}})}
 async function hSave(){if(!historyReady)throw new Error('每日歷史尚未就緒，請重新開啟後再匯入');const s={id:crypto.randomUUID(),date:IMPORT_STATE.snapshotDate,savedAt:Date.now(),file:activeFileName,scopeVersion:SCOPE_VERSION,rows:hRows(allWelltakeRows)};await hDB([s]);historyRecords=await hDB();hRender();renderDaily()}
 function hCompare(a,b){const am=new Map(a.rows.map(r=>[r.id,r])),bm=new Map(b.rows.map(r=>[r.id,r])),old=hOld(a),now=hOld(b),os=new Set(old.map(r=>r.id));return {start:old.length,end:now.length,net:old.length-now.length,missing:a.rows.filter(r=>!bm.has(r.id)),added:b.rows.filter(r=>!am.has(r.id)),done:old.filter(r=>{const t=bm.get(r.id);return t&&['Resolved','Closed'].includes(t.status)&&t.handled>a.date&&t.handled<=b.date}),unknownClosed:old.filter(r=>{const t=bm.get(r.id);return t&&['Resolved','Closed'].includes(t.status)&&!(t.handled>a.date&&t.handled<=b.date)}),entered:now.filter(r=>!os.has(r.id)),crossed:now.filter(r=>am.get(r.id)?.status==='In Progress'&&!os.has(r.id)),reopened:now.filter(r=>am.has(r.id)&&am.get(r.id).status!=='In Progress'),newOld:now.filter(r=>!am.has(r.id))}}
-function hRender(){const dates=[...new Set(historyRecords.filter(s=>s.scopeVersion===SCOPE_VERSION).map(s=>s.date))].sort();for(const id of ['historyFrom','historyTo']){const e=$('#'+id),prev=e.value;e.replaceChildren();dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;e.append(o)});e.value=dates.includes(prev)?prev:(id==='historyFrom'?dates.at(-2)||dates[0]:dates.at(-1))||''}$('#historySummary').textContent=`${scopeLabel()}｜新規則 ${dates.length} 天；全部保存 ${historyRecords.length} 個版本（含舊版隔離歷史）；同日以最後保存版本比較。歷史只存在本瀏覽器，請定期匯出備份。`;hShow()}
+function hRender(){
+ safeRender("Engineer",eRender);const dates=[...new Set(historyRecords.filter(s=>s.scopeVersion===SCOPE_VERSION).map(s=>s.date))].sort();for(const id of ['historyFrom','historyTo']){const e=$('#'+id),prev=e.value;e.replaceChildren();dates.forEach(d=>{const o=document.createElement('option');o.value=d;o.textContent=d;e.append(o)});e.value=dates.includes(prev)?prev:(id==='historyFrom'?dates.at(-2)||dates[0]:dates.at(-1))||''}$('#historySummary').textContent=`${scopeLabel()}｜新規則 ${dates.length} 天；全部保存 ${historyRecords.length} 個版本（含舊版隔離歷史）；同日以最後保存版本比較。歷史只存在本瀏覽器，請定期匯出備份。`;hShow()}
 function hShow(){const a=hLatest($('#historyFrom').value),b=hLatest($('#historyTo').value),out=$('#historyResult');if(!a||!b){out.textContent='至少匯入兩個不同資料日期，才能進行跨日比對。';return}if(a.date>=b.date){out.textContent='基準日期必須早於比較日期。';return}const c=hCompare(a,b),days=Math.round((Date.parse(b.date)-Date.parse(a.date))/86400000),ids=rs=>rs.length?rs.map(r=>r.id).join('、'):'無';out.textContent=`範圍：${scopeLabel()}\n比較期間：${a.date} → ${b.date}（${days}天${days===1?'':'；非當日變化'}）\n基準檔：${a.file}｜${new Date(a.savedAt).toLocaleString('zh-TW')}\n比較檔：${b.file}｜${new Date(b.savedAt).toLocaleString('zh-TW')}\n>21天期初：${c.start}｜期末：${c.end}\n區間 IT完成老案：${c.done.length}｜${ids(c.done)}\nIT 已完成但 Handling Date 不符／缺少（含舊快照）：${c.unknownClosed.length}｜${ids(c.unknownClosed)}\n新增進入>21天：${c.entered.length}\n　跨過門檻：${c.crossed.length}｜重新進入未結：${c.reopened.length}｜新納入老案：${c.newOld.length}\n本次未包含案件：${c.missing.length}｜${ids(c.missing)}\n本次新納入案件：${c.added.length}｜${ids(c.added)}\n存量差（期初－期末）：${c.net}；僅為數量差，不等於正式完成件數。\n${c.missing.length?'有案件消失，不能判定為改善淨減。':'仍須確認兩次匯出母體及篩選一致。'}`}
 function hDaily(text){if(!activeRows.length)return text;const date=IMPORT_STATE.snapshotDate,current={date,rows:hRows()},previous=hLatest(hDay(date,-1)),monday=new Date(date+'T00:00:00Z');monday.setUTCDate(monday.getUTCDate()-((monday.getUTCDay()+6)%7));const weekDate=hDay(monday.toISOString().slice(0,10),-1),week=hLatest(weekDate);if(previous){const c=hCompare(previous,current);text=text.replace('- 期初存量：需昨日快照',`- 期初存量：${c.start} 件（${previous.date}）`).replace('- 當日 IT完成老案：需昨日快照（目標 ≥3件）',`- 當日 IT完成老案：${c.done.length} 件（目標 ≥3件；需今日 IT 已完成且 Handling Date 為今日）`).replace('- 當日新增>21天：需昨日快照',`- 當日新增>21天：${c.entered.length} 件（跨門檻 ${c.crossed.length}、重新未結 ${c.reopened.length}、新納入 ${c.newOld.length}）`).replace('- 當日淨減：需昨日快照（目標 ≥2件）',`- 當日淨減：待確認資料範圍；存量差 ${c.net} 件（目標 ≥2件），本次未包含 ${c.missing.length} 件，不推定結案`)}if(week){const c=hCompare(week,current);text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：待確認資料範圍；${weekDate} → ${date} 存量差 ${c.net} 件，本次未包含 ${c.missing.length} 件（目標 ≥10件）`)}else text=text.replace('- 本週累計淨減：需昨日快照，並需本週起始基準快照（目標 ≥10件）',`- 本週累計淨減：缺少本週起始基準快照 ${weekDate}（目標 ≥10件）`);return text.replace('註：現有快取僅保存當前資料，未保存每日歷史快照；不得以案件消失推定完成。','註：每日歷史取同日最後保存版本；缺少昨日不自動替代。存量差須核對範圍，不得以案件消失推定完成。')}
 function hValidate(data){if(data?.format!=='welltake-history-v1'||!Array.isArray(data.snapshots)||data.snapshots.length>2000)throw new Error('不是支援的每日快照備份（最多2000版本）');const seen=new Set();return data.snapshots.map(s=>{if(typeof s.id!=='string'||s.id.length>100||seen.has(s.id)||!/^\d{4}-\d{2}-\d{2}$/.test(s.date)||!Number.isFinite(s.savedAt)||s.savedAt<=0||s.savedAt>Date.now()+60000||typeof s.file!=='string'||!Array.isArray(s.rows)||s.rows.length>200000)throw new Error('快照格式不正確');if(hDay(s.date)!==s.date||s.date>localToday())throw new Error('快照日期不正確');seen.add(s.id);const ids=new Set();const rows=s.rows.map(r=>{if(!r||typeof r.id!=='string'||!r.id||r.id.length>200||ids.has(r.id)||!['In Progress','Closed','Resolved','Cancelled'].includes(r.status)||typeof r.type!=='string'||typeof r.owner!=='string')throw new Error('案件欄位或重複編號不正確');for(const key of ['created','closed',...(r.handled!==undefined?['handled']:[])]){if(key!=='created'&&r[key]==='')continue;if(typeof r[key]!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(r[key])||hDay(r[key])!==r[key]||r[key]>s.date)throw new Error('案件日期不正確')}if(r.closed&&r.closed<r.created)throw new Error('結案日期早於建立日期');ids.add(r.id);if(r.handled&&r.handled<r.created)throw new Error('IT完成日期早於建立日期');if(s.scopeVersion===SCOPE_VERSION&&typeof r.site!=='string')throw new Error('新規則快照缺少廠區');return {...(s.scopeVersion===SCOPE_VERSION?{site:r.site}:{}),id:r.id,created:r.created,closed:r.closed,...(r.handled!==undefined?{handled:r.handled}:{}),status:r.status,type:r.type,owner:r.owner}});if(s.scopeVersion!==undefined&&s.scopeVersion!==SCOPE_VERSION)throw new Error('不支援的範圍版本');return {...(s.scopeVersion?{scopeVersion:s.scopeVersion}:{}),id:s.id,date:s.date,savedAt:s.savedAt,file:s.file.slice(0,500),rows}})}
@@ -3378,14 +3380,60 @@ function dailyReportText(){
  lines.push('','六、次日優先事項',`- 預計清理老案：待 Owner 確認；>21天候選 ${old.length} 件：${ids(old)}`,`- 即將超過7天案件：${ids(inc.filter(r=>r.Aging_Days>=6&&r.Aging_Days<=7))}（目前 Day6／Day7）`,'- 需跨單位協調事項：待確認，請依第五節逐案確認阻塞原因與等待對象。');
  return hDaily(lines.join('\n'));
 }
-function renderDaily(){ $('#dailyReport').textContent=dailyReportText();$('#dailyCopyStatus').textContent='';$('#copyDaily').disabled=!activeRows.length; }
+// Compare full snapshots before applying Site/type/owner filters.
+const E_COLUMNS=[['start','期初未完成'],['done','區間完成'],['oldDone','完成老案 >21天'],['late','新增逾期 Incident'],['end','期末未完成'],['oldEnd','期末 >21天'],['new','新增案件'],['in','轉入'],['out','轉出'],['reopen','重新開啟'],['missing','本次未包含'],['uncertain','待確認']];
+function eLatest(date){return historyRecords.filter(s=>s.scopeVersion===SCOPE_VERSION&&s.date===date).sort((a,b)=>b.savedAt-a.savedAt||b.id.localeCompare(a.id))[0]}
+function eCompare(a,b,site='',type=''){
+ const am=new Map(a.rows.map(r=>[r.id,r])),bm=new Map(b.rows.map(r=>[r.id,r])),groups=new Map();
+ const fits=r=>r&&(!site||r.site===site)&&(!type||r.type===type),open=r=>r?.status==='In Progress',done=r=>r&&['Resolved','Closed'].includes(r.status),owner=r=>r.owner||'未填承辦人';
+ function add(key,r,p,q){if(!fits(r))return;const name=owner(r);if(!groups.has(name))groups.set(name,{owner:name,...Object.fromEntries(E_COLUMNS.map(([k])=>[k,[]]))});groups.get(name)[key].push({id:r.id,p,q})}
+ for(const p of a.rows){const q=bm.get(p.id);if(open(p))add('start',p,p,q);if(!q)add('missing',p,p,q)}
+ for(const q of b.rows){const p=am.get(q.id),newCase=!p&&q.created>a.date&&q.created<=b.date;
+  if(open(q)){add('end',q,p,q);if(hAge(q,b.date)>21)add('oldEnd',q,p,q)}
+  if(newCase)add('new',q,p,q);
+  if(p&&(owner(p)!==owner(q)||p.site!==q.site)){add('out',p,p,q);add('in',q,p,q)}
+  if(p&&!open(p)&&open(q))add('reopen',q,p,q);
+  if(done(q)&&!done(p)){
+   if(q.handled>a.date&&q.handled<=b.date&&(open(p)||newCase)){add('done',q,p,q);if(open(p)&&hAge(p,a.date)>21)add('oldDone',q,p,q)}
+   else add('uncertain',q,p,q);
+  }else if(!p&&!newCase)add('uncertain',q,p,q);
+  if(open(q)&&q.type==='Incident'&&hAge(q,b.date)>7&&((open(p)&&p.type==='Incident'&&hAge(p,a.date)<=7)||newCase))add('late',q,p,q);
+ }
+ return [...groups.values()].sort((x,y)=>y.oldEnd.length-x.oldEnd.length||y.end.length-x.end.length||x.owner.localeCompare(y.owner));
+}
+let eCurrent=[],eDatesKey="";
+function eOptions(id,values,defaultValue){const el=$('#'+id),prev=el.value;el.replaceChildren();for(const [value,label] of values){const o=document.createElement('option');o.value=value;o.textContent=label;el.append(o)}el.value=values.some(x=>x[0]===prev)?prev:defaultValue}
+function eRender(){
+ const dates=[...new Set(historyRecords.filter(s=>s.scopeVersion===SCOPE_VERSION).map(s=>s.date))].sort();
+ if(eDatesKey!==dates.join(',')){eDatesKey=dates.join(',');$('#engineerFrom').value='';$('#engineerTo').value=''}
+ eOptions('engineerFrom',dates.map(d=>[d,d]),dates.at(-2)||'');eOptions('engineerTo',dates.map(d=>[d,d]),dates.at(-1)||'');
+ const a=eLatest($('#engineerFrom').value),b=eLatest($('#engineerTo').value);
+ $('#engineerDetails').textContent='點選表格數字查看案件。';eCurrent=[];
+ if(!a||!b||a.date>=b.date){$('#engineerSummary').textContent='需兩個不同日期的新規則快照；基準日期必須早於比較日期。';$('#engineerTable').innerHTML='';$('#engineerExport').disabled=true;return}
+ const types=[...new Set([...a.rows,...b.rows].map(r=>r.type))].sort();eOptions('engineerType',[['','全部類型'],...types.map(t=>[t,t])],'');
+ const all=eCompare(a,b,selectedSite,$('#engineerType').value);eOptions('engineerOwner',[['','全部工程師'],...all.map(g=>[g.owner,g.owner])],'');
+ eCurrent=all.filter(g=>(!$('#engineerOwner').value||g.owner===$('#engineerOwner').value)&&(!$('#engineerOpenOnly').checked||g.end.length));
+ eCurrent.sort((a,b)=>b[$('#engineerSort').value].length-a[$('#engineerSort').value].length);
+ const total=k=>eCurrent.reduce((n,g)=>n+g[k].length,0),days=Math.round((Date.parse(b.date)-Date.parse(a.date))/86400000);
+ $('#engineerSummary').textContent=`${a.date} → ${b.date}（${days}天，${days===1?'跨日':'區間'}變化）｜${scopeLabel()}｜${$('#engineerType').value||'全部類型'}｜${$('#engineerOwner').value||'全部工程師'}${$('#engineerOpenOnly').checked?'｜僅期末有未完成案件':''}\nIT完成 ${total('done')}｜完成老案 ${total('oldDone')}｜新增逾期 Incident ${total('late')}｜未完成 ${total('start')} → ${total('end')}（${total('end')-total('start')>=0?'+':''}${total('end')-total('start')}）\n完成按期末承辦人歸屬；轉派不代表完成。未包含 ${total('missing')} 件、待確認 ${total('uncertain')} 件，不推定改善。`;
+ $('#engineerTable').innerHTML='<thead><tr><th>工程師</th>'+E_COLUMNS.map(([,label])=>`<th>${label}</th>`).join('')+'<th>負荷增減</th></tr></thead><tbody>'+eCurrent.map((g,i)=>`<tr><td>${htmlText(g.owner)}</td>`+E_COLUMNS.map(([key])=>`<td><button class="ghost-btn" style="color:${key==='done'||key==='oldDone'?'var(--good)':key==='late'?'var(--bad)':'inherit'}" data-eg="${i}" data-ek="${key}">${g[key].length}</button></td>`).join('')+`<td>${g.end.length-g.start.length>=0?'+':''}${g.end.length-g.start.length}</td></tr>`).join('')+'</tbody>';
+ $('#engineerExport').disabled=!eCurrent.length;
+ $('#engineerTable').querySelectorAll('[data-eg]').forEach(el=>el.onclick=()=>eDetails(Number(el.dataset.eg),el.dataset.ek));
+}
+function eDetails(index,key){const g=eCurrent[index],label=E_COLUMNS.find(x=>x[0]===key)[1];$('#engineerDetails').innerHTML=`<h3>${htmlText(g.owner)}｜${label}（${g[key].length}件）</h3><div class="table-wrap"><table><thead><tr>${['Ticket','類型','廠區 期初 → 期末','承辦人 期初 → 期末','狀態 期初 → 期末','建立日','Handling Date','期末天數','異動'].map(x=>`<th>${x}</th>`).join('')}</tr></thead><tbody>`+g[key].map(({id,p,q})=>{const r=q||p;return '<tr>'+[id,r.type,`${p?.site||'—'} → ${q?.site||'—'}`,`${p?.owner||'—'} → ${q?.owner||'—'}`,`${p?.status||'—'} → ${q?.status||'未包含'}`,r.created,q?.handled||'—',q?hAge(q,$('#engineerTo').value):'—',p&&q&&(p.owner!==q.owner||p.site!==q.site)?'承辦人／廠區變更':label].map(v=>`<td>${htmlText(v)}</td>`).join('')+'</tr>'}).join('')+'</tbody></table></div>'}
+function eCsvCell(v){let t=String(v??'');if(/^[\s]*[=+@-]/.test(t))t="'"+t;return '"'+t.replaceAll('"','""')+'"'}
+function eExport(){const from=$('#engineerFrom').value,to=$('#engineerTo').value;const rows=[['基準日','比較日','廠區','類型','工程師',...E_COLUMNS.map(x=>x[1]),'負荷增減'],...eCurrent.map(g=>[from,to,selectedSite||'全部廠區',$('#engineerType').value||'全部類型',g.owner,...E_COLUMNS.map(([k])=>g[k].length),g.end.length-g.start.length])];const url=URL.createObjectURL(new Blob(['\uFEFF'+rows.map(r=>r.map(eCsvCell).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'})),a=document.createElement('a');a.href=url;a.download=`工程師改善_${from}_${to}.csv`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
+function eDaily(){if(!IMPORT_STATE.snapshotDate)return '';const to=IMPORT_STATE.snapshotDate,prev=eLatest(hDay(to,-1));if(!prev)return '\n\n七、工程師改善摘要\n需昨日快照；不由單一檔案推定改善。';const rows=eCompare(prev,{date:to,rows:hRows(allWelltakeRows)},selectedSite);return '\n\n七、工程師改善摘要（'+prev.date+' → '+to+'；全部類型，完成按期末承辦人）\n'+rows.map(g=>`${g.owner}：完成 ${g.done.length}、完成老案 ${g.oldDone.length}、新增逾期 Incident ${g.late.length}、未完成 ${g.start.length} → ${g.end.length}、期末老案 ${g.oldEnd.length}、未包含 ${g.missing.length}、待確認 ${g.uncertain.length}`).join('\n')}
+
+function renderDaily(){ $('#dailyReport').textContent=dailyReportText()+eDaily();$('#dailyCopyStatus').textContent='';$('#copyDaily').disabled=!activeRows.length; }
 async function copyDailyReport(){
- const text=dailyReportText();
+ const text=dailyReportText()+eDaily();
  try{await navigator.clipboard.writeText(text);$('#dailyCopyStatus').textContent='已複製日報';}
  catch(e){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();const ok=document.execCommand('copy');ta.remove();$('#dailyCopyStatus').textContent=ok?'已複製日報':'無法自動複製，請選取下方日報手動複製。';}
 }
 
 function renderAll(){
+ safeRender("Engineer",eRender);
   if(historyReady)hRender();
   safeRender("Daily Report",renderDaily);
   renderEmptyState();
@@ -3555,6 +3603,8 @@ applyFilterCollapse();
 $("#releaseSearch").addEventListener("input",renderReadme);
 $("#releaseScope").addEventListener("change",renderReadme);
 
+['engineerFrom','engineerTo','engineerType','engineerOwner','engineerOpenOnly','engineerSort'].forEach(id=>$('#'+id).addEventListener('change',eRender));
+$('#engineerExport').addEventListener('click',eExport);
 $('#copyDaily').addEventListener('click',copyDailyReport);
 hInit().then(()=>initializeCleanDashboard());
 </script>
