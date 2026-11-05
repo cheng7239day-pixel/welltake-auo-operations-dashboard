@@ -8,7 +8,7 @@
 <section id="admin" class="card" hidden><h2>帳號審核</h2><p>只能指定小組長或檢視者；管理者帳號不在此頁升級。核准後，小組長可保存授權廠區的模擬快照，檢視者僅可讀取。</p><div id="members"></div></section>
 </main><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script><script>
 'use strict';
-const URL='https://xaipuzdewphyznjysrla.supabase.co',KEY='sb_publishable_z6oDWrWKsuDQknVIk0Xkhg_i28WP4F0';
+const SUPABASE_URL='https://xaipuzdewphyznjysrla.supabase.co',KEY='sb_publishable_z6oDWrWKsuDQknVIk0Xkhg_i28WP4F0';
 const $=id=>document.getElementById(id),esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let client,member=null,viewer=null;
 function message(t){$('message').textContent=t}
@@ -29,5 +29,5 @@ $('logout').onclick=()=>run($('logout'),async()=>{await checked(client.auth.sign
 $('import').onclick=()=>run($('import'),async()=>{await checked(client.rpc('save_demo_snapshot',{p_day:$('day').value,p_site:$('site').value}));await loadDay();message('模擬快照已保存，可於其他裝置登入查看')});
 $('load').onclick=()=>run($('load'),async()=>{await loadDay();message('雲端讀取完成')});$('compare').onclick=()=>run($('compare'),async()=>{await compare();message('比較完成')});
 $('site').onchange=$('day').onchange=()=>{$('cases').innerHTML=$('metrics').innerHTML='';$('batch').textContent='請按查看選定日期';};
-(async()=>{try{if(!window.supabase)throw Error('登入元件無法載入，請確認網路允許 jsDelivr');client=supabase.createClient(URL,KEY,{auth:{storageKey:'welltake-cloud-test-auth',persistSession:true,detectSessionInUrl:true}});const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await profile();message('雲端測試入口。需先完成後端權限啟用及管理者信箱驗證。');client.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clearViews();$('account').hidden=true;$('login').hidden=false}})}catch(e){message(e.message)}})();
+(async()=>{try{if(!window.supabase)throw Error('登入元件無法載入，請確認網路允許 jsDelivr');client=supabase.createClient(SUPABASE_URL,KEY,{auth:{storageKey:'welltake-cloud-test-auth',persistSession:true,detectSessionInUrl:true}});const {data,error}=await client.auth.getSession();if(error)throw error;if(data.session)await profile();message('雲端測試入口。需先完成後端權限啟用及管理者信箱驗證。');client.auth.onAuthStateChange(event=>{if(event==='SIGNED_OUT'){clearViews();$('account').hidden=true;$('login').hidden=false}})}catch(e){message(e.message)}})();
 </script></body></html>
