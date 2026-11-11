@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welltake AUO 維運分析平台 V6.22.1 Test</title>
+<title>Welltake AUO 維運分析平台 V6.23 Test</title>
 <style>
 :root{
   --bg:#E7EEF3;
@@ -1428,7 +1428,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
 
     <div class="sidebar-foot">
-      <div class="sidebar-version">V6.22 Test · Raw Tracking</div>
+      <div class="sidebar-version">V6.23 Test · Raw / Cloud</div>
       <div class="small">威策案件 Raw Data 追蹤</div>
     </div>
   </aside>
@@ -1442,7 +1442,7 @@ html[data-theme="dark"] .logo-dark{
     </span>
         <div class="topbar-title-text">
           <div class="eyebrow">AUO OPERATIONS ANALYTICS</div>
-          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.22 Test</span></h1>
+          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.23 Test</span></h1>
           <div class="small" style="margin-top:2px">AUO 專用維運分析 Dashboard</div>
         </div>
       </div>
@@ -1524,6 +1524,26 @@ html[data-theme="dark"] .logo-dark{
 <button id="copyDaily" class="primary-btn" type="button">複製日報</button> <span id="dailyCopyStatus" role="status" aria-live="polite"></span>
 <pre id="dailyReport" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.85;margin-top:20px"></pre>
 </div></section>
+<section class="panel" aria-label="資料來源與雲端同步" style="margin-bottom:12px">
+ <div id="renderErrors" role="alert" hidden></div>
+ <p id="dataSourceStatus" role="status">正在讀取本機資料，既有快取不會因版本更新清除。</p>
+ <button id="returnLatest" class="ghost-btn" hidden>回到最新版本</button>
+ <button id="recoverRaw" class="ghost-btn" hidden></button>
+ <button id="backupRecovery" class="ghost-btn">匯出本機救援備份</button>
+ <details><summary>雲端同步與登入</summary>
+  <p>登入後自動讀取授權廠區的最新成功上傳版本。上傳需另行確認；本機匯入不會自動外傳。</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">
+   <label>信箱 <input id="cloudEmail" type="email" autocomplete="email"></label>
+   <button id="cloudLogin">寄送登入連結</button><button id="cloudSignOut" hidden>登出</button>
+   <label>顯示名稱 <input id="cloudName" maxlength="60"></label><button id="cloudRequest" hidden>申請存取</button>
+   <label>雲端廠區 <select id="cloudSite" aria-label="雲端廠區"></select></label>
+   <button id="cloudRefresh" disabled>讀取雲端最新</button>
+   <button id="cloudUpload" disabled>上傳目前 Raw</button><button id="cloudLocal">回到本機資料</button>
+  </div>
+  <p id="cloudStatus" role="status">尚未登入雲端。雲端資料僅保留在此頁記憶體，不會覆蓋本機 Raw。</p>
+  <details id="cloudAdmin" hidden><summary>管理者：帳號與廠區審核</summary><p>僅授權已存在的正式廠區；請確認人員與工作範圍再核准。</p><div id="cloudMembers"></div></details>
+ </details>
+</section>
 <section id="overview" class="view active">
     <div class="hero-grid" id="heroGrid"></div>
 
@@ -1539,8 +1559,8 @@ html[data-theme="dark"] .logo-dark{
 <div class="two-col">
       <div class="panel">
         <div class="panel-head">
-          <div><h2>7 日 IT完成率趨勢</h2><div class="small">官方 Tableau KPI｜90% 為客戶目標</div></div>
-          <div class="legend"><span><i class="dot" style="background:var(--accent)"></i>Raw 完成率</span><span><i class="dot" style="background:var(--target)"></i>Target</span></div>
+          <div><h2>7 日 IT完成率趨勢</h2><div class="small">Raw Data｜依建立月份分組，不代表官方 Tableau KPI</div></div>
+          <div class="legend"><span><i class="dot" style="background:var(--accent)"></i>Raw 完成率</span></div>
         </div>
         <div id="officialTrend" class="chart"></div>
       </div>
@@ -1552,7 +1572,7 @@ html[data-theme="dark"] .logo-dark{
 
     <div class="equal-col">
       <div class="panel">
-        <div class="panel-head"><div><h2>處理人員 7 日 IT完成率</h2><div class="small">顯示本月 IT 已完成 Incident 件數較高者</div></div></div>
+        <div class="panel-head"><div><h2>處理人員 7 日 IT完成率</h2><div class="small">依本月 Raw IT 7天完成率排序</div></div></div>
         <div id="handlerBars"></div>
       </div>
       <div class="panel">
@@ -1562,7 +1582,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
   </section>
 
-  <section id="trend" class="view">
+  <section id="trend" class="view"><p id="trendSourceNote" class="data-note" role="status"></p>
     <div class="equal-col">
       <div class="panel">
         <div class="panel-head"><div><h2>案件量趨勢</h2><div class="small">Incident 與全部新增案件</div></div></div>
@@ -1789,7 +1809,7 @@ html[data-theme="dark"] .logo-dark{
     <div class="import-grid">
       <div class="panel">
         <div class="panel-head">
-          <div><h2>Raw Data 匯入</h2><div class="small">Excel / CSV 於瀏覽器本機解析，不將檔案上傳至外部服務</div></div>
+          <div><h2>Raw Data 匯入</h2><div class="small">Excel / CSV 先於瀏覽器本機解析；只有按「上傳目前 Raw」並確認後才傳送雲端最小必要欄位</div></div>
         </div>
 
         <div id="rawDropZone" class="import-drop">
@@ -1983,16 +2003,16 @@ monthSelect.value="";
 function themeColor(name){
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
-function lineChart(el, labels, series, target=null){
+function lineChart(el, labels, series, target=null, format="auto"){
   const w=760,h=270,p={l:48,r:22,t:24,b:40};
   const all=series.flatMap(s=>s.values.filter(v=>v!=null));
   if(target!=null) all.push(target);
   if(!all.length){el.innerHTML=`<div class="small">無資料</div>`;return}
   let min=Math.min(...all), max=Math.max(...all);
-  const percentMode=max<=1.1;
+  const percentMode=format==="pct"||(format==="auto"&&max<=1.1);
   if(percentMode){min=Math.max(0,min-.08);max=Math.min(1,Math.max(max+.08,.92))}
-  else {min=0;max=Math.max(1,max*1.15)}
-  const x=i=>p.l+i*(w-p.l-p.r)/Math.max(1,labels.length-1);
+  else {min=0;max=format==="count"?Math.max(4,Math.ceil(max*1.15/4)*4):Math.max(1,max*1.15)}
+  const x=i=>labels.length===1?p.l+(w-p.l-p.r)/2:p.l+i*(w-p.l-p.r)/Math.max(1,labels.length-1);
   const y=v=>p.t+(max-v)*(h-p.t-p.b)/(max-min||1);
   const grid=themeColor("--grid")||"#dfe6eb";
   const txt=themeColor("--chart-text")||"#77818b";
@@ -2138,8 +2158,8 @@ function renderOverview(){
 
 
 function renderTrend(){
-lineChart($('#volumeTrend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Incident_Cases)},{values:DATA.monthly.map(x=>x.Created_Cases)}]);
-lineChart($('#over7Trend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Closed_Over_7D)}]);
+lineChart($('#volumeTrend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Incident_Cases)},{values:DATA.monthly.map(x=>x.Created_Cases)}],null,'count');
+lineChart($('#over7Trend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Closed_Over_7D)}],null,'count');
 $('#monthlyTable').innerHTML='<thead><tr><th>建立月份</th><th>Incident</th><th>IT 完成</th><th>7 天內完成</th><th>超過 7 天完成</th><th>7 天完成率</th><th>仍未完成</th></tr></thead><tbody>'+DATA.monthly.map(x=>'<tr><td>'+monthName(x.Month)+'</td><td>'+num(x.Incident_Cases)+'</td><td>'+num(x.Closed_Incident_Cohort)+'</td><td>'+num(x.Closed_Within_7D)+'</td><td>'+num(x.Closed_Over_7D)+'</td><td>'+pct(x.Raw_7D_Rate)+'</td><td>'+activeRows.filter(r=>r.Month===x.Month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length+'</td></tr>').join('')+'</tbody>';
 }
 
@@ -3116,7 +3136,8 @@ async function applyImportedRaw(){
   const rows=selectLatestRows(canonicalizeRows()),snapshot=$('#rawSnapshotDate').value;
   validateSnapshot(rows,snapshot);
   if(!confirm(`確認套用：${IMPORT_STATE.fileName}\n實際撈取日期：${snapshot}\n此日期用於每日快照及區間比較，請確認與檔案一致。同日使用最後保存版本。`))return;
-  buildCurrentModel(rows,snapshot,IMPORT_STATE.fileName);
+  cloudEpoch++;sourceMode='local';cloudCatalog=[];try{historyRecords=await hDB();historyReady=true}catch(e){historyRecords=[];historyReady=false}setHistoricalView(false);cloudDirty=true;
+  buildCurrentModel(rows,snapshot,IMPORT_STATE.fileName);latestLocalRecord=rawRecord();notice('本機新匯入｜'+activeFileName+'｜資料日期 '+snapshot+'。尚未上傳雲端。');cloudControls();
   let rawSaved=false,historySaved=false;
   try{const backend=await persistRaw(rawRecord());rawSaved=true;cacheMessage(`已套用並保存至 ${backend}｜${rows.length} 個案件｜${months.length} 個月份｜快照 ${snapshot}`)}
   catch(e){cacheMessage(`已套用，但快取失敗：${e.message} 請保留原始檔；重新開啟可能恢復上次成功儲存的資料。`)}
@@ -3610,7 +3631,11 @@ $("#releaseScope").addEventListener("change",renderReadme);
 ['engineerFrom','engineerTo','engineerType','engineerOwner','engineerOpenOnly','engineerSort'].forEach(id=>$('#'+id).addEventListener('change',eRender));
 $('#engineerExport').addEventListener('click',eExport);
 $('#copyDaily').addEventListener('click',copyDailyReport);
-hInit().then(()=>initializeCleanDashboard());
+// Startup is owned by dashboard-repair.js; no destructive migration.
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script src="dashboard-repair.js?v=6.23"></script>
+<script src="cloud-sync.js?v=6.23"></script>
+<script>startDashboard().catch(e=>{document.querySelector('#dataSourceStatus').textContent='啟動未完成：'+e.message+'。請保留資料，不要清除快取。';});</script>
 </body>
 </html>
