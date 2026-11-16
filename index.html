@@ -1541,7 +1541,7 @@ html[data-theme="dark"] .logo-dark{
    <button id="cloudUpload" disabled>上傳目前 Raw</button><button id="cloudLocal">回到本機資料</button>
   </div>
   <p id="cloudStatus" role="status">尚未登入雲端。雲端資料僅保留在此頁記憶體，不會覆蓋本機 Raw。</p>
-  <details id="cloudAdmin" hidden><summary>管理者：帳號與廠區審核</summary><p>僅授權已存在的正式廠區；請確認人員與工作範圍再核准。</p><div id="cloudMembers"></div></details>
+  <details id="cloudAdmin" hidden><summary>管理者：帳號與廠區審核</summary><p>僅授權已存在的正式廠區；請確認人員與工作範圍再核准。</p><button id="issueShare">建立或換發全廠區分享連結</button><button id="revokeShare">停用分享連結</button><input id="shareResult" aria-label="全廠區分享網址" readonly hidden><div id="cloudMembers"></div></details>
  </details>
 </section>
 <section id="overview" class="view active">
@@ -2157,10 +2157,11 @@ function renderOverview(){
 
 
 
-function renderTrend(){
-lineChart($('#volumeTrend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Incident_Cases)},{values:DATA.monthly.map(x=>x.Created_Cases)}],null,'count');
-lineChart($('#over7Trend'),months.map(monthName),[{values:DATA.monthly.map(x=>x.Closed_Over_7D)}],null,'count');
-$('#monthlyTable').innerHTML='<thead><tr><th>建立月份</th><th>Incident</th><th>IT 完成</th><th>7 天內完成</th><th>超過 7 天完成</th><th>7 天完成率</th><th>仍未完成</th></tr></thead><tbody>'+DATA.monthly.map(x=>'<tr><td>'+monthName(x.Month)+'</td><td>'+num(x.Incident_Cases)+'</td><td>'+num(x.Closed_Incident_Cohort)+'</td><td>'+num(x.Closed_Within_7D)+'</td><td>'+num(x.Closed_Over_7D)+'</td><td>'+pct(x.Raw_7D_Rate)+'</td><td>'+activeRows.filter(r=>r.Month===x.Month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length+'</td></tr>').join('')+'</tbody>';
+function renderTrend(series=DATA.monthly){
+const labels=series.map(x=>monthName(x.Month));
+lineChart($('#volumeTrend'),labels,[{values:series.map(x=>x.Incident_Cases)},{values:series.map(x=>x.Created_Cases)}],null,'count');
+lineChart($('#over7Trend'),labels,[{values:series.map(x=>x.Closed_Over_7D)}],null,'count');
+$('#monthlyTable').innerHTML='<thead><tr><th>建立月份</th><th>資料日期</th><th>全部新增</th><th>Incident</th><th>IT 完成</th><th>7 天內完成</th><th>超過 7 天完成</th><th>7 天完成率</th><th>仍未完成</th></tr></thead><tbody>'+series.map(x=>'<tr><td>'+monthName(x.Month)+'</td><td>'+htmlText(x.snapshot||IMPORT_STATE.snapshotDate)+'</td><td>'+num(x.Created_Cases)+'</td><td>'+num(x.Incident_Cases)+'</td><td>'+num(x.Closed_Incident_Cohort)+'</td><td>'+num(x.Closed_Within_7D)+'</td><td>'+num(x.Closed_Over_7D)+'</td><td>'+pct(x.Raw_7D_Rate)+'</td><td>'+activeRows.filter(r=>r.Month===x.Month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length+'</td></tr>').join('')+'</tbody>';
 }
 
 function renderHandler(){

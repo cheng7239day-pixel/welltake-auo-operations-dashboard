@@ -54,9 +54,28 @@ async function returnToLatest(){
 }
 const originalRenderTrend=renderTrend;
 renderTrend=function(){
- originalRenderTrend();
- $('#trendSourceNote').textContent=`資料日期 ${IMPORT_STATE.snapshotDate||'尚無'}｜${scopeLabel()}｜${historicalView?'歷史版本':'目前版本'}。`+
- (months.length===1?'目前版本僅有一個建立月份，圖表顯示單點；其他月份可從右上角「歷史快照」選取。':months.length?'依目前版本的建立月份分組；不合併不同日期的案件。':'尚未載入 Raw；如有同範圍歷史，可從月份選單選取。');
+ const series=new Map(DATA.monthly.map(row=>[row.Month,row]));
+ const cutoff=IMPORT_STATE.snapshotDate;
+ const snapshots=compatibleHistory().filter(s=>s.date<=cutoff).sort((a,b)=>b.date.localeCompare(a.date)||b.savedAt-a.savedAt);
+ for(const snapshot of snapshots){
+  const groups=new Map();
+  for(const r of snapshot.rows){
+   const month=r.created.slice(0,7);
+   if(series.has(month)||(selectedSite&&r.site!==selectedSite))continue;
+   if(!groups.has(month))groups.set(month,[]);
+   groups.get(month).push(r);
+  }
+  for(const [month,rows] of groups){
+   const incident=historyRows({rows}).filter(r=>r.Request_Type==='Incident');
+   const done=incident.filter(r=>isITDone(r)&&r.Close_Days!=null);
+   const within=done.filter(r=>r.Close_Days<=7).length;
+   series.set(month,{Month:month,snapshot:snapshot.date,Created_Cases:rows.length,Incident_Cases:incident.length,
+    Closed_Incident_Cohort:done.length,Closed_Within_7D:within,Closed_Over_7D:done.length-within,
+    Raw_7D_Rate:done.length?within/done.length:null,open:incident.filter(r=>r.Handling_Status==='In Progress').length});
+  }
+ }
+ originalRenderTrend([...series.values()].sort((a,b)=>a.Month.localeCompare(b.Month)));
+ $('#trendSourceNote').textContent=scopeLabel()+'｜依案件建立月份統計。當期 Raw 缺少的月份採已載入、含該月份的最近快照，各月份資料日期詳見下表。';
 };
 // V6.21 retained these overview panels but removed their rendering calls.
 const originalRenderOverview=renderOverview;

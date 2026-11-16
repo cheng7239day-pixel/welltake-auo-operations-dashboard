@@ -3,10 +3,11 @@ const CLOUD_URL='https://xaipuzdewphyznjysrla.supabase.co';
 // Publishable browser key; all access is enforced by database membership checks.
 const CLOUD_KEY='sb_publishable_z6oDWrWKsuDQknVIk0Xkhg_i28WP4F0';
 let cloudClient=null,cloudMember=null,cloudBusy=false,cloudEpoch=0,cloudDirty=false,cloudUserId=null;
+let shareToken=null;
 let pendingUpload=null;
 let cloudProfileBusy=false;
 const cloudText=text=>{$('#cloudStatus').textContent=text};
-async function cloudRpc(name,args={}){const {data,error}=await cloudClient.rpc(name,args);if(error)throw Error(error.message);return data}
+async function cloudRpc(name,args={}){const {data,error}=await (shareToken?cloudClient.rpc('dashboard_shared_raw',{p_token:shareToken,p_action:name,p_args:args}):cloudClient.rpc(name,args));if(error)throw Error(error.message);return data}
 function cloudCanonical(rows){return rows.map(r=>{const created=parseAnyDate(r.created),handled=parseAnyDate(r.handled);return {
  Ticket_No:r.id,Site:r.site,Handler:r.owner,Handler_Group:r.group||'',Request_Type:r.type,Request_Type_Missing:r.type==='未分類',Handling_Status:r.status,
  Created_Date_Obj:created,Handling_Date_Obj:handled,Closed_Date_Obj:parseAnyDate(r.closed),Due_Date_Obj:parseAnyDate(r.due),Updated_Date_Obj:null,Snapshot_Date_Obj:null,
@@ -16,7 +17,7 @@ function cloudPayload(rows){return rows.map(r=>({id:r.Ticket_No,site:String(r.Si
 function cloudHistory(record){return {id:record.id,date:record.snapshot_date,savedAt:Date.parse(record.uploaded_at),file:record.source_filename,scopeVersion:SCOPE_VERSION,rows:record.rows}}
 function cloudControls(){
  const approved=cloudMember?.approval_status==='approved';
- $('#cloudSignOut').hidden=!cloudUserId;$('#cloudLogin').hidden=!!cloudUserId;
+ $('#cloudSignOut').hidden=!cloudUserId;$('#cloudLogin').hidden=!!cloudUserId||!!shareToken;
  $('#cloudRequest').hidden=!cloudUserId||!!cloudMember;
  $('#cloudRefresh').disabled=!approved||cloudBusy;
  $('#cloudUpload').disabled=!approved||!['admin','leader'].includes(cloudMember?.role)||cloudBusy||!allWelltakeRows.length||historicalView||sourceMode!=='local';
@@ -35,6 +36,7 @@ async function cloudProfile(){
  if(cloudProfileBusy)return;cloudProfileBusy=true;
  let profileEpoch=cloudEpoch;
  try{
+ if(!shareToken){
  const {data,error}=await cloudClient.auth.getUser();if(error)throw Error(error.message);
  if(profileEpoch!==cloudEpoch)return;
  const id=data.user?.id;if(!id){cloudUserId=null;cloudMember=null;clearCloudMemory();cloudControls();return}
@@ -43,15 +45,17 @@ async function cloudProfile(){
  if(profileEpoch!==cloudEpoch)return;
  if(result.error)throw Error(result.error.message);cloudMember=result.data;
  if(cloudMember?.approval_status!=='approved'){clearCloudMemory();cloudText(cloudMember?'帳號尚未核准或已停用；無法讀取雲端資料。':'已登入，請填寫顯示名稱並申請存取。');cloudControls();return}
- cloudControls();
+ }
  const sites=await cloudRpc('dashboard_raw_sites');
  if(profileEpoch!==cloudEpoch)return;
+ if(shareToken)cloudMember={role:'leader',approval_status:'approved'};
+ cloudControls();
  const sel=$('#cloudSite'),prev=sel.value;sel.replaceChildren();for(const s of sites){const o=document.createElement('option');o.value=s;o.textContent=s;sel.append(o)}
  sel.value=sites.includes(prev)?prev:sites[0]||'';
  if(!sites.length)cloudText('已核准登入；尚無授權廠區的正式上傳資料。可先匯入 Raw，再按「上傳目前 Raw」。');
  else if(!cloudDirty)await cloudRefresh(true);
  if(cloudMember?.role==='admin')await cloudListMembers();
- }finally{cloudProfileBusy=false}
+ }catch(e){if(shareToken){cloudMember=null;clearCloudMemory()}throw e}finally{cloudProfileBusy=false}
 }
 async function cloudLoadRecord(id,historical=false){
  const epoch=cloudEpoch,site=$('#cloudSite').value;
@@ -61,7 +65,15 @@ async function cloudLoadRecord(id,historical=false){
  const loadedHistory=[cloudHistory(record)];
  // Only another snapshot from this same site is eligible for interval comparison.
  const previous=cloudCatalog.find(s=>s.snapshot_date<record.snapshot_date);
- if(previous){const p=await cloudRpc('dashboard_raw_read',{p_id:previous.id,p_site:site});if(epoch!==cloudEpoch||site!==$('#cloudSite').value)return;loadedHistory.push(cloudHistory(p))}
+ const covered=new Set(rows.map(r=>r.Month));
+ for(const entry of cloudCatalog){
+  if(entry.id===record.id||entry.snapshot_date>=record.snapshot_date)continue;
+  if(entry.id!==previous?.id&&!entry.months.some(month=>!covered.has(month)))continue;
+  const past=await cloudRpc('dashboard_raw_read',{p_id:entry.id,p_site:site});
+  if(epoch!==cloudEpoch||site!==$('#cloudSite').value)return;
+  loadedHistory.push(cloudHistory(past));
+  for(const month of entry.months)covered.add(month);
+ }
  sourceMode='cloud';cloudDirty=false;selectedSite=site;cloudCurrentId=record.id;
  historyRecords=loadedHistory;historyReady=true;
  setHistoricalView(historical);buildCurrentModel(rows,record.snapshot_date,record.source_filename);
@@ -87,7 +99,7 @@ async function cloudUpload(){
  const rows=cloudPayload(allWelltakeRows),sites=[...new Set(rows.map(r=>r.site))].sort();
  if(sites.includes(''))throw Error('有案件缺少 Site，請先補齊廠區再上傳');
  const snapshot=IMPORT_STATE.snapshotDate,file=activeFileName;
- if(!confirm(`上傳至公司 Supabase 專案：${file}\n資料日期 ${snapshot}｜${rows.length} 件｜廠區 ${sites.join('、')}\n包含案件編號、承辦人、狀態、日期與分類；不含問題描述及聯絡個資。僅核准且有該廠區權限的帳號可讀取。確認上傳？`))return;
+ if(!confirm(`上傳至公司 Supabase 專案：${file}\n資料日期 ${snapshot}｜${rows.length} 件｜廠區 ${sites.join('、')}\n包含案件編號、承辦人、狀態、日期與分類；不含問題描述及聯絡個資。全廠區分享連結啟用時，持有人可讀取。確認上傳？`))return;
  const fingerprint=JSON.stringify({snapshot,file,rows});if(!pendingUpload||pendingUpload.fingerprint!==fingerprint)pendingUpload={fingerprint,id:crypto.randomUUID()};
  cloudBusy=true;cloudControls();const epoch=cloudEpoch;
  try{
@@ -121,18 +133,38 @@ async function cloudAction(fn){try{await fn()}catch(e){cloudText('未完成：'+
 async function cloudInit(){
  $('#cloudLocal').onclick=()=>cloudAction(useLocalData);
  if(!window.supabase){cloudText('雲端登入元件未載入；本機功能仍可使用。請確認網路後重新整理。');return}
- cloudClient=supabase.createClient(CLOUD_URL,CLOUD_KEY,{auth:{storageKey:'welltake-dashboard-auth-v1',persistSession:true,detectSessionInUrl:true,flowType:'pkce'}});
+ shareToken=new URLSearchParams(location.hash.slice(1)).get('share');
+ if(shareToken&&!/^[a-f0-9]{64}$/.test(shareToken)){cloudText('分享連結格式錯誤');return}
+ cloudClient=supabase.createClient(CLOUD_URL,CLOUD_KEY,{auth:{storageKey:'welltake-dashboard-auth-v1',persistSession:!shareToken,detectSessionInUrl:!shareToken,flowType:'pkce'}});
  $('#cloudLogin').onclick=()=>cloudAction(async()=>{const email=$('#cloudEmail').value.trim();if(!email)throw Error('請輸入登入信箱');const redirect=new URL(location.href);redirect.search='';redirect.hash='';const {error}=await cloudClient.auth.signInWithOtp({email,options:{emailRedirectTo:redirect.href}});if(error)throw Error(error.message);cloudText('已寄出登入連結，請在同一瀏覽器開啟。信件有寄送頻率限制，請勿連續重寄。')});
  $('#cloudSignOut').onclick=()=>cloudAction(async()=>{clearCloudMemory();const {error}=await cloudClient.auth.signOut();if(error)throw Error(error.message);cloudUserId=null;cloudMember=null;cloudText('已登出。')});
  $('#cloudRequest').onclick=()=>cloudAction(async()=>{await cloudRpc('request_dashboard_access',{p_name:$('#cloudName').value.trim()});await cloudProfile()});
  $('#cloudRefresh').onclick=()=>cloudAction(()=>cloudRefresh(true));
  $('#cloudUpload').onclick=()=>cloudAction(cloudUpload);
  $('#cloudSite').onchange=()=>{cloudEpoch++;clearCloudMemory();cloudAction(()=>cloudRefresh(true))};
+ if(shareToken){
+  $('#cloudEmail').parentElement.hidden=true;$('#cloudName').parentElement.hidden=true;
+  cloudDirty=false;
+  await cloudAction(cloudProfile);
+ }else{
+  for(const [id,enable] of [['issueShare',true],['revokeShare',false]]){
+   $('#'+id).onclick=()=>cloudAction(async()=>{
+    if(!confirm(enable?'建立新連結？先前連結將失效。':'停用全廠區分享連結？'))return;
+    const token=await cloudRpc('dashboard_manage_share',{p_enable:enable});
+    const field=$('#shareResult');field.value=token?location.origin+location.pathname+'#share='+token:'';
+    field.hidden=!token;if(token){field.focus();field.select()}cloudText(token?'請複製全廠區分享網址。':'分享連結已停用。');
+   });
+  }
  cloudClient.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT'){cloudUserId=null;cloudMember=null;clearCloudMemory();cloudControls()}else if(event==='SIGNED_IN')setTimeout(()=>cloudAction(cloudProfile),0)});
  const session=await cloudClient.auth.getSession();
  if(session.error)cloudText('登入狀態無法讀取：'+session.error.message);
  else if(session.data.session)await cloudAction(cloudProfile);
  else{cloudText('尚未登入雲端；本機資料可繼續使用。');cloudControls()}
- setInterval(()=>{if(!document.hidden&&sourceMode==='cloud')cloudAction(()=>cloudRefresh())},60000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&sourceMode==='cloud')cloudAction(()=>cloudRefresh())});
+ }
+ const refreshVisible=()=>{if(document.hidden)return;
+  if(shareToken&&!cloudDirty&&!historicalView)cloudAction(cloudProfile);
+  else if(sourceMode==='cloud')cloudAction(()=>cloudRefresh());
+ };
+ setInterval(refreshVisible,60000);
+ document.addEventListener('visibilitychange',refreshVisible);
 }
