@@ -4,7 +4,7 @@
 <meta name="color-scheme" content="light dark">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Welltake AUO 維運分析平台 V6.23 Test</title>
+<title>Welltake AUO 維運分析平台 V6.24</title>
 <style>
 :root{
   --bg:#E7EEF3;
@@ -1415,17 +1415,12 @@ html[data-theme="dark"] .logo-dark{
 
     <div class="nav sidebar-nav" role="tablist" aria-label="Dashboard sections">
       <button data-tab="overview" class="active"><span class="nav-icon">⌂</span><span>總覽</span></button>
-      <button data-tab="trend"><span class="nav-icon">↗</span><span>趨勢分析</span></button>
-      <button data-tab="handler"><span class="nav-icon">◎</span><span>處理人員</span></button>
-      <button data-tab="issue"><span class="nav-icon">◇</span><span>問題分類</span></button>
-      <button data-tab="compare"><span class="nav-icon">⇄</span><span>月度改善</span></button>
-      <button data-tab="action"><span class="nav-icon">!</span><span>行動／風險</span></button>
-      <button data-tab="history"><span class="nav-icon">◷</span><span>每日歷史快照</span></button>
-<button data-tab="engineer"><span class="nav-icon">↔</span><span>工程師改善追蹤</span></button><button data-tab="daily"><span class="nav-icon">▤</span><span>品質改善日報</span></button>
-      <button data-tab="import"><span class="nav-icon">⇧</span><span>資料匯入</span></button>
-      <button data-tab="quality"><span class="nav-icon">✓</span><span>資料品質</span></button>
-      <button data-tab="readme"><span class="nav-icon">≡</span><span>版本說明</span></button>
-    </div>
+<button data-tab="action"><span class="nav-icon">!</span><span>行動／風險</span></button>
+<button data-tab="daily"><span class="nav-icon">▤</span><span>品質改善日報</span></button>
+<button data-tab="trend"><span class="nav-icon">↗</span><span>趨勢與月比較</span></button>
+<button data-tab="handler"><span class="nav-icon">◎</span><span>人員分析</span></button>
+<button data-tab="issue"><span class="nav-icon">◇</span><span>問題分類</span></button>
+<button data-tab="import"><span class="nav-icon">⇧</span><span>資料管理</span></button></div>
 
     <div class="sidebar-foot">
       <div class="sidebar-version">V6.23 Test · Raw / Cloud</div>
@@ -1442,7 +1437,7 @@ html[data-theme="dark"] .logo-dark{
     </span>
         <div class="topbar-title-text">
           <div class="eyebrow">AUO OPERATIONS ANALYTICS</div>
-          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.23 Test</span></h1>
+          <h1>Welltake AUO 維運分析平台 <span class="version-tag">V6.24</span></h1>
           <div class="small" style="margin-top:2px">AUO 專用維運分析 Dashboard</div>
         </div>
       </div>
@@ -1518,8 +1513,8 @@ html[data-theme="dark"] .logo-dark{
       <button id="filterToggle" type="button" class="filter-toggle">收合篩選</button>
     </div>
 
-<section id="history" class="view"><div class="panel"><h2>每日歷史快照</h2><p>每次成功套用 Raw 後保存一個版本。日期重算不保存歷史，避免把舊狀態當作新資料。所有 Request Type 的 In Progress 納入存量。</p><p id="historySummary" role="status">讀取歷史中…</p><div class="row"><label>基準日期 <select id="historyFrom"></select></label> <label>比較日期 <select id="historyTo"></select></label></div><pre id="historyResult" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.9"></pre><button id="historyExport">匯出歷史備份</button> <label>匯入歷史備份 <input type="file" id="historyBackup" accept=".json,application/json"></label><button id="historyClear">清除全部歷史快照</button><p class="small">備份含案件編號與 Owner 等資料，未加密，請保存在公司允許的位置，不要上傳公開 GitHub。Raw／全部重置不清除每日歷史；請使用本頁專用清除按鈕。</p></div></section>
-<section id="engineer" class="view"><div class="panel"><h2>工程師改善追蹤</h2><p>依快照追蹤案件變化，不代表完整工作紀錄。沿用上方廠區篩選；完成採 Resolved／Closed 與 Handling Date，Resolved → Closed 不重複計算。</p><div class="import-actions"><label>基準日期 <select id="engineerFrom"></select></label><label>比較日期 <select id="engineerTo"></select></label><label>案件類型 <select id="engineerType"></select></label><label>工程師 <select id="engineerOwner"></select></label><label><input type="checkbox" id="engineerOpenOnly">只看期末有未完成案件</label><label>排序 <select id="engineerSort"><option value="oldEnd">期末老案</option><option value="done">區間完成</option><option value="late">新增逾期</option><option value="end">期末未完成</option></select></label><button id="engineerExport" class="primary-btn" disabled>匯出比較表 CSV</button></div><p id="engineerSummary" style="white-space:pre-wrap"></p><p class="small">依期末 >21 天老案排序。負荷增減＝期末－期初，不等於績效；新增逾期僅指 Incident。轉入／轉出包含承辦人或廠區變更，不限未完成案件。區間不包含基準日、包含比較日。點選數字查看明細。</p><div class="table-wrap"><table id="engineerTable"></table></div><div id="engineerDetails"></div></div></section><section id="daily" class="view"><div class="panel">
+<section id="history" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="import" data-parent="import" aria-pressed="false">匯入與同步</button><button type="button" data-view="quality" data-parent="import" aria-pressed="false">資料品質</button><button type="button" data-view="history" data-parent="import" aria-pressed="true">歷史快照</button><button type="button" data-view="readme" data-parent="import" aria-pressed="false">版本說明</button></div><div class="panel"><h2>每日歷史快照</h2><p>每次成功套用 Raw 後保存一個版本。日期重算不保存歷史，避免把舊狀態當作新資料。所有 Request Type 的 In Progress 納入存量。</p><p id="historySummary" role="status">讀取歷史中…</p><div class="row"><label>基準日期 <select id="historyFrom"></select></label> <label>比較日期 <select id="historyTo"></select></label></div><pre id="historyResult" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.9"></pre><button id="historyExport">匯出歷史備份</button> <label>匯入歷史備份 <input type="file" id="historyBackup" accept=".json,application/json"></label><button id="historyClear">清除全部歷史快照</button><p class="small">備份含案件編號與 Owner 等資料，未加密，請保存在公司允許的位置，不要上傳公開 GitHub。Raw／全部重置不清除每日歷史；請使用本頁專用清除按鈕。</p></div></section>
+<section id="engineer" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="handler" data-parent="handler" aria-pressed="false">月度表現</button><button type="button" data-view="engineer" data-parent="handler" aria-pressed="true">期間案件變化</button></div><div class="panel"><h2>工程師改善追蹤</h2><p>依快照追蹤案件變化，不代表完整工作紀錄。沿用上方廠區篩選；完成採 Resolved／Closed 與 Handling Date，Resolved → Closed 不重複計算。</p><div class="import-actions"><label>基準日期 <select id="engineerFrom"></select></label><label>比較日期 <select id="engineerTo"></select></label><label>案件類型 <select id="engineerType"></select></label><label>工程師 <select id="engineerOwner"></select></label><label><input type="checkbox" id="engineerOpenOnly">只看期末有未完成案件</label><label>排序 <select id="engineerSort"><option value="oldEnd">期末老案</option><option value="done">區間完成</option><option value="late">新增逾期</option><option value="end">期末未完成</option></select></label><button id="engineerExport" class="primary-btn" disabled>匯出比較表 CSV</button></div><p id="engineerSummary" style="white-space:pre-wrap"></p><p class="small">依期末 >21 天老案排序。負荷增減＝期末－期初，不等於績效；新增逾期僅指 Incident。轉入／轉出包含承辦人或廠區變更，不限未完成案件。區間不包含基準日、包含比較日。點選數字查看明細。</p><div class="table-wrap"><table id="engineerTable"></table></div><div id="engineerDetails"></div></div></section><section id="daily" class="view"><div class="panel">
 <h2>品質改善日報</h2><p class="small">依匯入快照日期產生；Current Snapshot 不受月份、人員或問題篩選限制。僅代表匯入檔涵蓋案件，請確認包含所有未結老案。客戶案件資料僅供授權人員使用。</p>
 <button id="copyDaily" class="primary-btn" type="button">複製日報</button> <span id="dailyCopyStatus" role="status" aria-live="polite"></span>
 <pre id="dailyReport" style="white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.85;margin-top:20px"></pre>
@@ -1529,15 +1524,15 @@ html[data-theme="dark"] .logo-dark{
  <p id="dataSourceStatus" role="status">正在讀取本機資料，既有快取不會因版本更新清除。</p>
  <button id="returnLatest" class="ghost-btn" hidden>回到最新版本</button>
  <button id="recoverRaw" class="ghost-btn" hidden></button>
- <button id="backupRecovery" class="ghost-btn">匯出本機救援備份</button>
- <details><summary>雲端同步與登入</summary>
-  <p>登入後自動讀取授權廠區的最新成功上傳版本。上傳需另行確認；本機匯入不會自動外傳。</p>
+ 
+ <details><summary>資料同步</summary>
+  <p>選擇廠區可讀取最新資料。分享頁確認匯入後會上傳案件摘要。</p>
   <div style="display:flex;flex-wrap:wrap;gap:8px;margin:8px 0">
    <label>信箱 <input id="cloudEmail" type="email" autocomplete="email"></label>
    <button id="cloudLogin">寄送登入連結</button><button id="cloudSignOut" hidden>登出</button>
    <label>顯示名稱 <input id="cloudName" maxlength="60"></label><button id="cloudRequest" hidden>申請存取</button>
    <label>雲端廠區 <select id="cloudSite" aria-label="雲端廠區"></select></label>
-   <button id="cloudRefresh" disabled>讀取雲端最新</button>
+   <button id="cloudRefresh" disabled>重新整理雲端資料</button>
    <button id="cloudUpload" disabled>上傳目前 Raw</button><button id="cloudLocal">回到本機資料</button>
   </div>
   <p id="cloudStatus" role="status">尚未登入雲端。雲端資料僅保留在此頁記憶體，不會覆蓋本機 Raw。</p>
@@ -1582,14 +1577,14 @@ html[data-theme="dark"] .logo-dark{
     </div>
   </section>
 
-  <section id="trend" class="view"><p id="trendSourceNote" class="data-note" role="status"></p>
+  <section id="trend" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="trend" data-parent="trend" aria-pressed="true">趨勢走勢</button><button type="button" data-view="compare" data-parent="trend" aria-pressed="false">兩月比較</button></div><p id="trendSourceNote" class="data-note" role="status"></p>
     <div class="equal-col">
       <div class="panel">
         <div class="panel-head"><div><h2>案件量趨勢</h2><div class="small">Incident 與全部新增案件</div></div></div>
         <div id="volumeTrend" class="chart"></div>
       </div>
       <div class="panel">
-        <div class="panel-head"><div><h2>>7 日已結案趨勢</h2><div class="small">Raw 分析</div></div></div>
+        <div class="panel-head"><div><h2>超過 7 日才 IT 完成的 Incident</h2><div class="small">Raw 分析</div></div></div>
         <div id="over7Trend" class="chart"></div>
       </div>
     </div>
@@ -1600,7 +1595,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
   </section>
 
-  <section id="handler" class="view">
+  <section id="handler" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="handler" data-parent="handler" aria-pressed="true">月度表現</button><button type="button" data-view="engineer" data-parent="handler" aria-pressed="false">期間案件變化</button></div>
     <div class="split-layout">
       <div class="panel">
         <div class="toolbar">
@@ -1667,7 +1662,7 @@ html[data-theme="dark"] .logo-dark{
   </section>
 
   
-<section id="compare" class="view">
+<section id="compare" class="view"><p class="small">依各快照已觀測的不重複案件比較；月份完整性須與來源報表核對。</p><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="trend" data-parent="trend" aria-pressed="false">趨勢走勢</button><button type="button" data-view="compare" data-parent="trend" aria-pressed="true">兩月比較</button></div>
   <div class="compare-controls">
     <label>基準月份
       <select id="baselineMonth"></select>
@@ -1791,7 +1786,7 @@ html[data-theme="dark"] .logo-dark{
   </section>
 
 
-  <section id="import" class="view">
+  <section id="import" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="import" data-parent="import" aria-pressed="true">匯入與同步</button><button type="button" data-view="quality" data-parent="import" aria-pressed="false">資料品質</button><button type="button" data-view="history" data-parent="import" aria-pressed="false">歷史快照</button><button type="button" data-view="readme" data-parent="import" aria-pressed="false">版本說明</button></div>
     <div class="panel" style="margin-bottom:12px">
       <p id="requestTypeQuality" class="small"></p>
       <h2>資料與瀏覽器快取</h2>
@@ -1800,8 +1795,8 @@ html[data-theme="dark"] .logo-dark{
       <button id="recalcSnapshot" class="ghost-btn">更新快照日期並重算</button>
       <p class="small">請填原始檔的實際匯出／快照日期；預設為今天。日期變更只重算 Aging，無法取得檔案外的新狀態。篩選 Handler 含 welltake；Site 可切換廠區。Aging 為快照日期減建立日期的日曆天；IT 7D 完成天數採 Handling Date 減 Created Date 的日曆日期差。</p>
       <div class="import-actions" style="justify-content:flex-start">
-        <button id="clearRawCache" class="ghost-btn">清除 Raw 資料與快取</button>
-        <button id="resetAllData" class="ghost-btn">全部重置</button>
+        <details><summary>本機備份與重置</summary><button id="backupRecovery" class="ghost-btn">匯出本機救援備份</button><button id="clearRawCache" class="ghost-btn">清除 Raw 資料與快取</button>
+        <button id="resetAllData" class="ghost-btn">全部重置</button></details>
       </div>
       <p id="cacheStatus" role="status">等待匯入 Raw Data。</p>
       <p class="small">快取包含案件及處理人資料，請使用受控電腦；共用電腦使用完畢請重置。快取不是備份，換瀏覽器、搬移 HTML 或清除網站資料後可能需重新匯入。</p>
@@ -1809,7 +1804,7 @@ html[data-theme="dark"] .logo-dark{
     <div class="import-grid">
       <div class="panel">
         <div class="panel-head">
-          <div><h2>Raw Data 匯入</h2><div class="small">Excel / CSV 先於瀏覽器本機解析；只有按「上傳目前 Raw」並確認後才傳送雲端最小必要欄位</div></div>
+          <div><h2>Raw Data 匯入</h2><div class="small">Excel / CSV 先於瀏覽器本機解析；分享頁確認後同步必要欄位，一般入口可選擇只在本機套用</div></div>
         </div>
 
         <div id="rawDropZone" class="import-drop">
@@ -1865,7 +1860,7 @@ html[data-theme="dark"] .logo-dark{
     </div>
   </section>
 
-  <section id="quality" class="view">
+  <section id="quality" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="import" data-parent="import" aria-pressed="false">匯入與同步</button><button type="button" data-view="quality" data-parent="import" aria-pressed="true">資料品質</button><button type="button" data-view="history" data-parent="import" aria-pressed="false">歷史快照</button><button type="button" data-view="readme" data-parent="import" aria-pressed="false">版本說明</button></div>
     <div class="panel">
       <div class="panel-head"><div><h2>資料品質與使用規則</h2><div class="small">避免把不同版本 Raw Data 當成完全同口徑</div></div></div>
       <div class="quality-grid">
@@ -1892,7 +1887,7 @@ html[data-theme="dark"] .logo-dark{
   </section>
 
 
-  <section id="readme" class="view">
+  <section id="readme" class="view"><div class="import-actions" aria-label="頁面切換"><button type="button" data-view="import" data-parent="import" aria-pressed="false">匯入與同步</button><button type="button" data-view="quality" data-parent="import" aria-pressed="false">資料品質</button><button type="button" data-view="history" data-parent="import" aria-pressed="false">歷史快照</button><button type="button" data-view="readme" data-parent="import" aria-pressed="true">版本說明</button></div>
     <div class="panel">
       <div class="panel-head">
         <div>
@@ -2149,7 +2144,7 @@ function renderOverview(){
  const nowMap=new Map(hRows().map(r=>[r.id,r]));const newLate=prev?prev.rows.filter(r=>r.type==='Incident'&&r.status==='In Progress'&&hAge(r,prev.date)<=7&&nowMap.get(r.id)?.status==='In Progress'&&hAge(nowMap.get(r.id),date)>7).length:null;
  const cards=[['IT未完成（全部類型）',open.length],['>21天老案（全部類型）',open.filter(r=>r.Aging_Days>21).length],['昨日老案今日 IT完成',comparison?comparison.done.length:'需昨日快照'],['新跨過7天（Incident，持續未結）',newLate??'需昨日快照']];
  const priority=[...open].filter(r=>r.Aging_Days>21||(r.Request_Type==='Incident'&&r.Aging_Days>=4)).sort((a,b)=>b.Aging_Days-a.Aging_Days);
- panel.innerHTML=`<h2>品質改善總覽</h2><p>現況日期：${htmlText(date)}｜${htmlText(scopeLabel())}｜所選廠區現況不受月份／人員篩選影響。IT完成＝Resolved 或 Closed；完成日＝Handling Date；7天採日曆日期差。</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">${cards.map(([label,value])=>`<div class="kpi"><div class="label">${label}</div><div class="value">${value}</div></div>`).join('')}</div><p>${comparison?`昨日 → 今日老案存量：${comparison.start} → ${comparison.end}；存量差 ${comparison.net}。本次未包含 ${comparison.missing.length} 件；範圍待核對，不直接認定改善成果。`:'尚無昨日快照，先建立基準；不能由單份檔案推定每日改善。'}</p><h3>按案件類型追蹤</h3><div class="table-wrap"><table><thead><tr><th>Request Type</th><th>未完成</th><th>日期差 >7天</th><th>>21天老案</th></tr></thead><tbody>${qualityGroups(open).map(g=>`<tr><td>${htmlText(g.type)}</td><td>${g.open}</td><td>${g.over7}</td><td>${g.old}</td></tr>`).join('')}</tbody></table></div><p class="small">非 Incident 的 >7天僅代表案件年齡，不自動判定違反 SLA。未分類保留列管。</p><h3>${htmlText(month)} 建立月份品質參考</h3><p>Incident IT 7天內完成率：<strong>${pct(cohort?.Raw_7D_Rate)}</strong>（${cohort?.Closed_Within_7D??0}／${cohort?.Closed_Incident_Cohort??0} 件 IT完成）；仍未完成 ${activeRows.filter(r=>r.Month===month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length} 件。依 Raw Data 計算，完成率與未完成存量須一起追蹤。</p><h3>今日優先行動（${priority.length}件，列出前50件）</h3><div class="table-wrap"><table><thead><tr><th>Ticket</th><th>類型</th><th>Owner</th><th>Aging</th><th>建議行動</th></tr></thead><tbody>${priority.slice(0,50).map(r=>`<tr><td>${htmlText(r.Ticket_No)}</td><td>${htmlText(r.Request_Type)}</td><td>${htmlText(r.Handler||'待確認')}</td><td>${r.Aging_Days}</td><td>${htmlText(r.Next_Action)}</td></tr>`).join('')||'<tr><td colspan="5">無符合條件案件</td></tr>'}</tbody></table></div><p>完整案件請至「行動／風險」；每日／本週比較請至「品質改善日報」及「每日歷史快照」。重複問題原因與協調需求仍需人工確認。</p>`;
+ panel.innerHTML=`<h2>品質改善總覽</h2><p>現況日期：${htmlText(date)}｜${htmlText(scopeLabel())}｜所選廠區現況不受月份／人員篩選影響。IT完成＝Resolved 或 Closed；完成日＝Handling Date；7天採日曆日期差。</p><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px">${cards.map(([label,value])=>`<div class="kpi"><div class="label">${label}</div><div class="value">${value}</div></div>`).join('')}</div><p>${comparison?`昨日 → 今日老案存量：${comparison.start} → ${comparison.end}；存量差 ${comparison.net}。本次未包含 ${comparison.missing.length} 件；範圍待核對，不直接認定改善成果。`:'尚無昨日快照，先建立基準；不能由單份檔案推定每日改善。'}</p><h3>按案件類型追蹤</h3><div class="table-wrap"><table><thead><tr><th>Request Type</th><th>未完成</th><th>日期差 >7天</th><th>>21天老案</th></tr></thead><tbody>${qualityGroups(open).map(g=>`<tr><td>${htmlText(g.type)}</td><td>${g.open}</td><td>${g.over7}</td><td>${g.old}</td></tr>`).join('')}</tbody></table></div><p class="small">非 Incident 的 >7天僅代表案件年齡，不自動判定違反 SLA。未分類保留列管。</p><h3>${htmlText(month)} 建立月份品質參考</h3><p>Incident IT 7天內完成率：<strong>${pct(cohort?.Raw_7D_Rate)}</strong>（${cohort?.Closed_Within_7D??0}／${cohort?.Closed_Incident_Cohort??0} 件 IT完成）；仍未完成 ${cohort?.open??0} 件。依 Raw Data 計算，完成率與未完成存量須一起追蹤。</p><h3>今日優先行動（${priority.length}件，列出前50件）</h3><div class="table-wrap"><table><thead><tr><th>Ticket</th><th>類型</th><th>Owner</th><th>Aging</th><th>建議行動</th></tr></thead><tbody>${priority.slice(0,50).map(r=>`<tr><td>${htmlText(r.Ticket_No)}</td><td>${htmlText(r.Request_Type)}</td><td>${htmlText(r.Handler||'待確認')}</td><td>${r.Aging_Days}</td><td>${htmlText(r.Next_Action)}</td></tr>`).join('')||'<tr><td colspan="5">無符合條件案件</td></tr>'}</tbody></table></div><p>完整案件請至「行動／風險」；每日／本週比較請至「品質改善日報」及「每日歷史快照」。重複問題原因與協調需求仍需人工確認。</p>`;
 }
 
 
@@ -2161,7 +2156,7 @@ function renderTrend(series=DATA.monthly){
 const labels=series.map(x=>monthName(x.Month));
 lineChart($('#volumeTrend'),labels,[{values:series.map(x=>x.Incident_Cases)},{values:series.map(x=>x.Created_Cases)}],null,'count');
 lineChart($('#over7Trend'),labels,[{values:series.map(x=>x.Closed_Over_7D)}],null,'count');
-$('#monthlyTable').innerHTML='<thead><tr><th>建立月份</th><th>資料日期</th><th>全部新增</th><th>Incident</th><th>IT 完成</th><th>7 天內完成</th><th>超過 7 天完成</th><th>7 天完成率</th><th>仍未完成</th></tr></thead><tbody>'+series.map(x=>'<tr><td>'+monthName(x.Month)+'</td><td>'+htmlText(x.snapshot||IMPORT_STATE.snapshotDate)+'</td><td>'+num(x.Created_Cases)+'</td><td>'+num(x.Incident_Cases)+'</td><td>'+num(x.Closed_Incident_Cohort)+'</td><td>'+num(x.Closed_Within_7D)+'</td><td>'+num(x.Closed_Over_7D)+'</td><td>'+pct(x.Raw_7D_Rate)+'</td><td>'+activeRows.filter(r=>r.Month===x.Month&&r.Request_Type==='Incident'&&r.Handling_Status==='In Progress').length+'</td></tr>').join('')+'</tbody>';
+$('#monthlyTable').innerHTML='<thead><tr><th>建立月份</th><th>資料日期</th><th>全部新增</th><th>Incident</th><th>IT 完成</th><th>7 天內完成</th><th>超過 7 天完成</th><th>7 天完成率</th><th>仍未完成</th></tr></thead><tbody>'+series.map(x=>'<tr><td>'+monthName(x.Month)+'</td><td>'+htmlText(x.snapshot||IMPORT_STATE.snapshotDate)+'</td><td>'+num(x.Created_Cases)+'</td><td>'+num(x.Incident_Cases)+'</td><td>'+num(x.Closed_Incident_Cohort)+'</td><td>'+num(x.Closed_Within_7D)+'</td><td>'+num(x.Closed_Over_7D)+'</td><td>'+pct(x.Raw_7D_Rate)+'</td><td>'+num(x.open)+'</td></tr>').join('')+'</tbody>';
 }
 
 function renderHandler(){
@@ -2563,7 +2558,7 @@ function renderEarlyWarning(actionIncident){
 
 
 function renderAction(){
-  $("#snapshotScope").textContent=`Current Snapshot｜${IMPORT_STATE.snapshotDate||"等待匯入"}｜${scopeLabel()} 最新狀態｜月份／時間範圍選單不影響此母體｜Request Type 待補 ${TICKETS.filter(r=>r.Request_Type_Missing).length} 件（未納入 Incident KPI／預警）`;
+  $("#snapshotScope").textContent=`Current Snapshot｜${IMPORT_STATE.snapshotDate||"等待匯入"}｜${scopeLabel()} 最新狀態｜月份／時間範圍選單不影響此母體｜Request Type 待補 ${activeRows.filter(r=>r.Request_Type_Missing).length} 件（未納入 Incident KPI／預警）`;
   const currentMonth=monthSelect.value;
   const useImported=!!IMPORT_STATE.appliedMonth;
   const actionIncident=useImported?IMPORT_STATE.actionIncident:ACTION_INCIDENT;
@@ -3072,15 +3067,16 @@ function buildCurrentModel(rows,snapshot,fileName){
   rows=rows.filter(r=>!selectedSite||siteKey(r)===selectedSite);
   DATA.monthly=[];DATA.handlers=[];DATA.issues=[];DATA.officialSnapshot={};
   TICKETS.length=0;Object.keys(HANDLER_ROLE_MAP).forEach(k=>delete HANDLER_ROLE_MAP[k]);
-  for(const r of rows){
+  const monthlyRows=observedMonthlyRows(snapshot);
+  for(const r of monthlyRows){
     TICKETS.push({...r,Closed_Within_7D:isITDone(r)&&r.Close_Days!=null&&r.Close_Days<=7});
     if(r.Handler&&r.Handler_Group)HANDLER_ROLE_MAP[r.Handler]=r.Handler_Group;
   }
-  const allMonths=[...new Set(rows.map(r=>r.Month))].sort();
+  const allMonths=[...new Set(monthlyRows.map(r=>r.Month))].sort();
   for(const month of allMonths){
-    const cohort=rows.filter(r=>r.Month===month),inc=cohort.filter(r=>r.Request_Type==='Incident');
+    const cohort=monthlyRows.filter(r=>r.Month===month),inc=cohort.filter(r=>r.Request_Type==='Incident');
     const closed=inc.filter(r=>isITDone(r)&&r.Close_Days!=null),within=closed.filter(r=>r.Close_Days<=7);
-    DATA.monthly.push({Month:month,Created_Cases:cohort.length,Incident_Cases:inc.length,Closed_Incident_Cohort:closed.length,Closed_Within_7D:within.length,Closed_Over_7D:closed.length-within.length,Raw_7D_Rate:closed.length?within.length/closed.length:null,Official_7D_Rate:null,Gap_pp:null,Closed_In_Month:rows.filter(r=>r.Handling_Date_Obj&&isoMonth(r.Handling_Date_Obj)===month&&isITDone(r)).length,Reconstructed_MonthEnd_待處理案件:null,月增減_Official_pp:null});
+    DATA.monthly.push({Month:month,snapshot:cohort.reduce((d,r)=>d>r.observedDate?d:r.observedDate,''),open:inc.filter(r=>r.Handling_Status==='In Progress').length,Created_Cases:cohort.length,Incident_Cases:inc.length,Closed_Incident_Cohort:closed.length,Closed_Within_7D:within.length,Closed_Over_7D:closed.length-within.length,Raw_7D_Rate:closed.length?within.length/closed.length:null,Official_7D_Rate:null,Gap_pp:null,Closed_In_Month:monthlyRows.filter(r=>r.Handling_Date_Obj&&isoMonth(r.Handling_Date_Obj)===month&&isITDone(r)).length,Reconstructed_MonthEnd_待處理案件:null,月增減_Official_pp:null});
     for(const key of ['Handler','Sub_Type']){
       const grouped=new Map();
       for(const r of inc){
@@ -3136,7 +3132,9 @@ async function applyImportedRaw(){
   const missing=REQUIRED_CANONICAL.filter(k=>!IMPORT_STATE.mapping[k]);if(missing.length)throw new Error('必要欄位尚未對應。');
   const rows=selectLatestRows(canonicalizeRows()),snapshot=$('#rawSnapshotDate').value;
   validateSnapshot(rows,snapshot);
-  if(!confirm(`確認套用：${IMPORT_STATE.fileName}\n實際撈取日期：${snapshot}\n此日期用於每日快照及區間比較，請確認與檔案一致。同日使用最後保存版本。`))return;
+  const sync=Boolean(shareToken);
+  if(sync && (!cloudClient||cloudBusy))throw Error("雲端尚未就緒，請稍後重試");
+  if(!confirm(`${sync?"確認匯入並上傳":"確認本機套用"}：${IMPORT_STATE.fileName}\n實際撈取日期：${snapshot}\n廠區：${[...new Set(rows.map(siteKey))].join("、")}｜${rows.length} 件。${sync?"全廠區分享連結的持有人可讀取案件摘要。":""}`))return;
   cloudEpoch++;sourceMode='local';cloudCatalog=[];try{historyRecords=await hDB();historyReady=true}catch(e){historyRecords=[];historyReady=false}setHistoricalView(false);cloudDirty=true;
   buildCurrentModel(rows,snapshot,IMPORT_STATE.fileName);latestLocalRecord=rawRecord();notice('本機新匯入｜'+activeFileName+'｜資料日期 '+snapshot+'。尚未上傳雲端。');cloudControls();
   let rawSaved=false,historySaved=false;
@@ -3146,6 +3144,10 @@ async function applyImportedRaw(){
   const logSaved=addUpdateLog(`Raw Data 套用｜檔案：${IMPORT_STATE.fileName}｜資料日期：${snapshot}｜全部威策案件：${rows.length} 件｜涵蓋月份：${[...new Set(rows.map(r=>r.Month))].sort().join('、')}｜Raw 快取：${rawSaved?'已保存':'保存失敗，僅本次有效'}｜每日歷史：${historySaved?'已保存':'未保存'}`);
   if(!logSaved)cacheMessage($('#cacheStatus').textContent+'｜更新紀錄未保存：瀏覽器儲存不可用或已滿；案件套用結果不受影響。');
   $('#rawImportStatus').textContent=`已套用整份檔案；${rows.length} 個唯一案件、${months.join('、')}。${rows.filter(r=>r.Request_Type_Missing).length?`其中 ${rows.filter(r=>r.Request_Type_Missing).length} 件 Request Type 空白，保留為未分類；計入全部案件／全部未結，但不納入 Incident KPI 與預警。`:''}`;
+  if(sync){
+   try{await cloudUpload(true);$('#rawImportStatus').textContent='已上傳｜'+rows.length+' 件｜資料日期 '+snapshot}
+   catch(error){notice('本機已套用，雲端上傳尚未確認。可按「上傳目前 Raw」重試。');$('#rawImportStatus').textContent='上傳未確認：'+error.message}
+  }
  }catch(e){$('#rawImportStatus').textContent=`未套用：${e.message} 原分析保留。`;$('#rawImportStatus').className='import-status bad'}
  finally{cacheBusy=false;$('#applyRawBtn').disabled=false}
 }
@@ -3250,7 +3252,7 @@ function renderUpdateLog(){
   $("#updateLogList").innerHTML=arr.length?arr.map(x=>`<div class="insight"><strong>${x.ts}</strong>${htmlText(x.text)}</div>`).join(""):`<div class="insight"><strong>尚無更新紀錄</strong>新版完成 Raw Data 套用後會產生；舊版未記錄的操作不會補造。</div>`;
 }
 function renderImportPage(){
-  $("#requestTypeQuality").textContent=`已套用資料：Request Type 待補 ${TICKETS.filter(r=>r.Request_Type_Missing).length} 件。空白類型保留為未分類；全部案件及 In Progress 未結仍計入，Incident KPI／預警不計入。`;
+  $("#requestTypeQuality").textContent=`已套用資料：Request Type 待補 ${activeRows.filter(r=>r.Request_Type_Missing).length} 件。空白類型保留為未分類；全部案件及 In Progress 未結仍計入，Incident KPI／預警不計入。`;
   renderUpdateLog();
 }
 
@@ -3352,7 +3354,7 @@ function safeRender(label,fn){
 let historyRecords=[],historyReady=false;
 function hDay(d,delta=0){const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+delta);return x.toISOString().slice(0,10)}
 function hAge(r,d){return Math.round((Date.parse(d+'T00:00:00Z')-Date.parse(r.created+'T00:00:00Z'))/86400000)}
-function hRows(rows=activeRows){return rows.map(r=>({site:siteKey(r),id:r.Ticket_No,created:isoDate(r.Created_Date_Obj),closed:isoDate(r.Closed_Date_Obj),handled:isoDate(r.Handling_Date_Obj),status:r.Handling_Status,type:r.Request_Type,owner:r.Handler||''}))}
+function hRows(rows=activeRows){return rows.map(r=>({site:siteKey(r),id:r.Ticket_No,created:isoDate(r.Created_Date_Obj),closed:isoDate(r.Closed_Date_Obj),handled:isoDate(r.Handling_Date_Obj),status:r.Handling_Status,type:r.Request_Type,owner:r.Handler||'',sub_type:r.Sub_Type,sub_type2:r.Sub_Type2}))}
 function hOld(s){return s.rows.filter(r=>r.status==='In Progress'&&hAge(r,s.date)>21)}
 function hLatest(d){const s=historyRecords.filter(s=>s.scopeVersion===SCOPE_VERSION&&s.date===d).sort((a,b)=>b.savedAt-a.savedAt||b.id.localeCompare(a.id))[0];return s?{...s,rows:s.rows.filter(r=>!selectedSite||r.site===selectedSite)}:undefined}
 async function hDB(records){return new Promise((resolve,reject)=>{const q=indexedDB.open('welltake_daily_history_v1',1);q.onupgradeneeded=()=>q.result.createObjectStore('snapshots',{keyPath:'id'});q.onerror=()=>reject(q.error);q.onblocked=()=>reject(new Error('歷史資料庫被其他分頁占用'));q.onsuccess=()=>{const db=q.result,tx=db.transaction('snapshots',records?'readwrite':'readonly'),st=tx.objectStore('snapshots');let req;if(records)records.forEach(r=>st.put(r));else req=st.getAll();tx.oncomplete=()=>{resolve(req?req.result:null);db.close()};tx.onerror=tx.onabort=()=>{reject(tx.error||new Error('歷史儲存失敗'));db.close()}}})}
@@ -3539,9 +3541,9 @@ $("#issueSort").addEventListener("change",renderIssue);
 $("#scopeFilter").addEventListener("change",renderAction);
 $("#riskFilter").addEventListener("change",renderAction);
 $("#actionSearch").addEventListener("input",renderAction);
-$$(".nav button").forEach(b=>b.addEventListener("click",()=>{
-  $$(".nav button").forEach(x=>x.classList.remove("active"));b.classList.add("active");
-  $$(".view").forEach(v=>v.classList.remove("active"));$("#"+b.dataset.tab).classList.add("active");
+$$(".nav button,[data-view]").forEach(b=>b.addEventListener("click",()=>{
+  $$(".nav button").forEach(x=>x.classList.remove("active"));document.querySelector('.nav [data-tab="'+(b.dataset.parent||b.dataset.tab)+'"]').classList.add("active");
+  $$(".view").forEach(v=>v.classList.remove("active"));$("#"+(b.dataset.view||b.dataset.tab)).classList.add("active");
 }));
 
 
@@ -3635,8 +3637,8 @@ $('#copyDaily').addEventListener('click',copyDailyReport);
 // Startup is owned by dashboard-repair.js; no destructive migration.
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
-<script src="dashboard-repair.js?v=6.23"></script>
-<script src="cloud-sync.js?v=6.23"></script>
+<script src="dashboard-repair.js?v=6.24"></script>
+<script src="cloud-sync.js?v=6.24"></script>
 <script>startDashboard().catch(e=>{document.querySelector('#dataSourceStatus').textContent='啟動未完成：'+e.message+'。請保留資料，不要清除快取。';});</script>
 </body>
 </html>

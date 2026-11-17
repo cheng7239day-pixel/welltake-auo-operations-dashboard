@@ -24,11 +24,12 @@ function historyRows(s){
  Ticket_No:r.id,Site:r.site,Handler:r.owner,Handler_Group:'',Request_Type:r.type,Request_Type_Missing:r.type==='未分類',
  Handling_Status:r.status,Created_Date_Obj:created,Handling_Date_Obj:handled,Closed_Date_Obj:parseAnyDate(r.closed),
  Due_Date_Obj:null,Updated_Date_Obj:null,Snapshot_Date_Obj:null,Month:isoMonth(created),Close_Days:dayDiff(created,handled),
- Sub_Type:'歷史快照未保存分類',Sub_Type2:'',Problem_Description:'歷史快照未保存問題描述',Overdue_Label:'',Ticket_Type:''};});
+ Sub_Type:r.sub_type||'歷史快照未保存分類',Sub_Type2:r.sub_type2||'',Problem_Description:'歷史快照未保存問題描述',Overdue_Label:'',Ticket_Type:''};});
 }
 function setHistoricalView(value){historicalView=value;$('#returnLatest').hidden=!value;$('#recalcSnapshot').disabled=value||sourceMode==='cloud';$('#clearRawCache').disabled=value||sourceMode==='cloud';$('#resetAllData').disabled=value||sourceMode==='cloud';for(const id of ['historyClear','historyBackup','historyExport'])$('#'+id).disabled=sourceMode==='cloud'}
 async function chooseReportMonth(){
  const wanted=monthSelect.value;
+ if(months.includes(wanted)){renderAll();return}
  try{
   if(sourceMode==='cloud'){
    const entry=cloudCatalog.find(s=>s.months.includes(wanted));if(!entry)throw Error('沒有可讀取的歷史月份');
@@ -52,35 +53,30 @@ async function returnToLatest(){
  if(!latestLocalRecord){notice('沒有可還原的目前 Raw；歷史仍保留，請先備份再匯入完整 Raw。');return}
  setHistoricalView(false);const r=latestLocalRecord;buildCurrentModel(reviveRows(r.rows),r.snapshot,r.fileName);notice(`本機目前 Raw｜資料日期 ${r.snapshot}｜${r.fileName}`);
 }
+function observedMonthlyRows(snapshot){
+ const cases=new Map();
+ const daily=new Map();
+ for(const entry of compatibleHistory()){
+  if(entry.date>snapshot)continue;
+  const previous=daily.get(entry.date);
+  if(!previous||entry.savedAt>previous.savedAt)daily.set(entry.date,entry);
+ }
+ for(const entry of [...daily.values()].sort((a,b)=>a.date.localeCompare(b.date))){
+  for(const row of historyRows(entry))cases.set(row.Ticket_No,{...row,observedDate:entry.date});
+ }
+ for(const row of allWelltakeRows)cases.set(row.Ticket_No,{...row,observedDate:snapshot});
+ return [...cases.values()].filter(row=>!selectedSite||siteKey(row)===selectedSite);
+}
 const originalRenderTrend=renderTrend;
 renderTrend=function(){
- const series=new Map(DATA.monthly.map(row=>[row.Month,row]));
- const cutoff=IMPORT_STATE.snapshotDate;
- const snapshots=compatibleHistory().filter(s=>s.date<=cutoff).sort((a,b)=>b.date.localeCompare(a.date)||b.savedAt-a.savedAt);
- for(const snapshot of snapshots){
-  const groups=new Map();
-  for(const r of snapshot.rows){
-   const month=r.created.slice(0,7);
-   if(series.has(month)||(selectedSite&&r.site!==selectedSite))continue;
-   if(!groups.has(month))groups.set(month,[]);
-   groups.get(month).push(r);
-  }
-  for(const [month,rows] of groups){
-   const incident=historyRows({rows}).filter(r=>r.Request_Type==='Incident');
-   const done=incident.filter(r=>isITDone(r)&&r.Close_Days!=null);
-   const within=done.filter(r=>r.Close_Days<=7).length;
-   series.set(month,{Month:month,snapshot:snapshot.date,Created_Cases:rows.length,Incident_Cases:incident.length,
-    Closed_Incident_Cohort:done.length,Closed_Within_7D:within,Closed_Over_7D:done.length-within,
-    Raw_7D_Rate:done.length?within/done.length:null,open:incident.filter(r=>r.Handling_Status==='In Progress').length});
-  }
- }
- originalRenderTrend([...series.values()].sort((a,b)=>a.Month.localeCompare(b.Month)));
- $('#trendSourceNote').textContent=scopeLabel()+'｜依案件建立月份統計。當期 Raw 缺少的月份採已載入、含該月份的最近快照，各月份資料日期詳見下表。';
+ originalRenderTrend();
+ $('#trendSourceNote').textContent='依建立月份統計已觀測案件，同案取最新狀態。資料日期為該月案件最近觀測日；完整月份件數須與來源報表核對。';
 };
 // V6.21 retained these overview panels but removed their rendering calls.
 const originalRenderOverview=renderOverview;
 renderOverview=function(){
  originalRenderOverview();
+ const chart=$('#officialTrend');if(chart&&activeRows.length)chart.closest('.panel')?.parentElement?.removeAttribute('hidden');
  lineChart($('#officialTrend'),months.map(monthName),[{values:DATA.monthly.map(r=>r.Raw_7D_Rate)}],null,'pct');
  const month=monthSelect.value,row=DATA.monthly.find(r=>r.Month===month),index=months.indexOf(month),previous=index>0?DATA.monthly.find(r=>r.Month===months[index-1]):null;
  barChart($('#handlerBars'),DATA.handlers.filter(r=>r.Month===month),'Handler','7D_Rate','pct',8);
@@ -88,7 +84,7 @@ renderOverview=function(){
  const notes=$('#management備註s');notes.replaceChildren();
  const messages=row?[
   `${monthName(month)}：Incident ${row.Incident_Cases} 件；有效 IT 完成 ${row.Closed_Incident_Cohort} 件，7 天內 ${row.Closed_Within_7D} 件，完成率 ${pct(row.Raw_7D_Rate)}。`,
-  previous?`較 ${monthName(previous.Month)} 的完成率差異：${pp(ppDelta(row.Raw_7D_Rate,previous.Raw_7D_Rate))}。兩者依同一版本的建立月份分組。`:'目前版本沒有可比較的前一月份；可從報告月份選取其他歷史版本。',
+  previous?`較 ${monthName(previous.Month)} 的完成率差異：${pp(ppDelta(row.Raw_7D_Rate,previous.Raw_7D_Rate))}。兩者依已觀測案件的建立月份分組。`:'目前版本沒有可比較的前一月份；可從報告月份選取其他歷史版本。',
   '此處是 Raw Data 分析，不是官方 Tableau KPI；未完成案件與缺少有效 Handling Date 的案件不在完成率分母。'
  ]:['尚無可分析的 Raw Data。'];
  for(const message of messages){const p=document.createElement('p');p.textContent=message;notes.append(p)}
