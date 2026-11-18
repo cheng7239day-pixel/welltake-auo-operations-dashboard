@@ -51,7 +51,7 @@ async function cloudProfile(force=false){
  if(shareToken)cloudMember={role:'leader',approval_status:'approved'};
  cloudControls();
  const sel=$('#cloudSite'),prev=sel.value;sel.replaceChildren();for(const s of sites){const o=document.createElement('option');o.value=s;o.textContent=s;sel.append(o)}
- sel.value=sites.includes(prev)?prev:sites[0]||'';
+ sel.value=sites.includes(prev)?prev:(sites.includes('5.HC')?'5.HC':sites[0]||'');
  if(!sites.length)cloudText('尚無已上傳資料，請先匯入第一份 Raw。');
  else if(!cloudDirty)await cloudRefresh(force);
  if(cloudMember?.role==='admin')await cloudListMembers();
