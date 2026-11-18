@@ -104,7 +104,13 @@ async function cloudUpload(confirmed=false){
  const fingerprint=JSON.stringify({snapshot,file,rows});if(!pendingUpload||pendingUpload.fingerprint!==fingerprint)pendingUpload={fingerprint,id:crypto.randomUUID()};
  cloudBusy=true;cloudControls();const epoch=cloudEpoch;
  try{
-  await cloudRpc('dashboard_raw_upload',{p_upload_id:pendingUpload.id,p_snapshot:snapshot,p_filename:file,p_rows:rows});
+  const batches=await cloudRpc('dashboard_raw_upload',{p_upload_id:pendingUpload.id,p_snapshot:snapshot,p_filename:file,p_rows:rows});
+  if(!Array.isArray(batches)||batches.length!==sites.length)throw Error('資料庫未回傳完整上傳結果');
+  for(const batch of batches){
+   const saved=await cloudRpc('dashboard_raw_read',{p_id:batch.id,p_site:batch.site});
+   if(saved.snapshot_date!==snapshot||saved.row_count!==rows.filter(r=>r.site===batch.site).length)throw Error('資料庫回讀日期或件數不符，請重試');
+  }
+  notice('資料庫已確認保存｜資料日期 '+snapshot+'｜'+rows.length+' 件｜'+sites.join('、'));
   if(epoch!==cloudEpoch)throw Error('檢視範圍已變更，請重新讀取雲端確認上傳結果');cloudDirty=false;pendingUpload=null;cloudText('上傳交易完成，正在讀取最新版本。');
  }finally{cloudBusy=false;cloudControls()}
  await cloudProfile();
@@ -133,6 +139,10 @@ async function cloudListMembers(){
 async function cloudAction(fn){try{await fn()}catch(e){cloudText('未完成：'+e.message)}finally{cloudControls()}}
 async function cloudInit(){
  $('#cloudLocal').onclick=()=>cloudAction(useLocalData);
+ shareToken=new URLSearchParams(location.hash.slice(1)).get('share');
+ if(shareToken){await initSharedAccess();return}
+ notice('本機模式｜請使用完整分享連結，才能將匯入資料上傳並跨電腦查看。');
+ $('#applyRawBtn').textContent='僅套用本機資料';
  if(!window.supabase){cloudText('雲端登入元件未載入；本機功能仍可使用。請確認網路後重新整理。');return}
  shareToken=new URLSearchParams(location.hash.slice(1)).get('share');
  if(shareToken)$('#applyRawBtn').textContent='確認匯入並上傳';
@@ -169,4 +179,38 @@ async function cloudInit(){
  };
  setInterval(refreshVisible,60000);
  document.addEventListener('visibilitychange',refreshVisible);
+}
+
+async function initSharedAccess(){
+ const status=$('#cloudStatus');
+ status.closest('details').open=true;
+ $('#applyRawBtn').textContent='確認匯入並上傳';
+ if(!/^[a-f0-9]{64}$/.test(shareToken)){notice('分享連結格式錯誤，尚未連接資料庫。');return}
+ // Shared access uses the native browser request API, independent of the login SDK.
+ cloudClient={rpc:async(name,args)=>{
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),60000);
+  try{
+   const response=await fetch(CLOUD_URL+'/rest/v1/rpc/'+name,{
+    method:'POST',headers:{apikey:CLOUD_KEY,'Content-Type':'application/json'},
+    body:JSON.stringify(args),signal:controller.signal
+   });
+   const result=await response.json();
+   if(!response.ok)return {error:{message:result.message||'資料庫連線失敗 ('+response.status+')'}};
+   return {data:result};
+  }finally{clearTimeout(timer)}
+ }};
+ $('#cloudEmail').parentElement.hidden=true;
+ $('#cloudName').parentElement.hidden=true;
+ $('#cloudRefresh').onclick=()=>cloudAction(()=>cloudProfile(true));
+ $('#cloudUpload').onclick=()=>cloudAction(()=>cloudUpload());
+ $('#cloudSite').onchange=()=>{clearCloudMemory();cloudAction(()=>cloudRefresh(true))};
+ cloudDirty=false;
+ notice('正在連接共享資料庫…');
+ await cloudAction(cloudProfile);
+ if(sourceMode!=='cloud'){
+  notice(cloudMember?'資料庫已連線｜目前顯示本機資料，請按「上傳目前 Raw」同步。':'資料庫連線失敗｜'+status.textContent);
+ }
+ const refresh=()=>{if(!document.hidden&&!cloudDirty&&!historicalView)cloudAction(cloudProfile)};
+ setInterval(refresh,60000);
+ document.addEventListener('visibilitychange',refresh);
 }
